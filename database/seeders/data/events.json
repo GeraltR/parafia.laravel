@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "date": "2026-06-29",
+    "time": "niedziela, 10:00",
+    "title": "Uroczystość Świętych Piotra i Pawła",
+    "description": "Msza Święta z błogosławieństwem; uroczysta procesja"
+  },
+  {
+    "id": 2,
+    "date": "2026-07-13",
+    "time": "niedziela, 12:00",
+    "title": "Odpust Parafialny",
+    "description": "Suma odpustowa ku czci św. Elżbiety Węgierskiej"
+  },
+  {
+    "id": 3,
+    "date": "2026-07-15",
+    "time": "poniedziałek, 18:00",
+    "title": "Rekolekcje Letnie",
+    "description": "Szczegóły w ogłoszeniach duszpasterskich"
+  },
+  {
+    "id": 4,
+    "date": "2026-07-22",
+    "time": "poniedziałek, 10:00",
+    "title": "Dzień Chorych",
+    "description": "Msza Święta z namaszczeniem chorych"
+  }
+]

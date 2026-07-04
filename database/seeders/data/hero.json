@@ -1,0 +1,26 @@
+{
+  "title": "",
+  "titleWidth": 10,
+  "titleFont": "",
+  "titleVAlign": "center",
+  "subtitle": "",
+  "subtitleWidth": 8,
+  "subtitleFont": "",
+  "subtitleVAlign": "center",
+  "keynote": "Kościół otwarty każdego dnia dla modlitwy i spotkania z Bogiem",
+  "keynoteWidth": 10,
+  "keynoteFont": "",
+  "keynoteVAlign": "center",
+  "backgroundImage": "/img/hero-bg.png",
+  "buttons": [
+    { "id": 1, "label": "Msze Święte", "href": "#msze", "icon": "mass" },
+    { "id": 2, "label": "Ogłoszenia", "href": "#aktualnosci", "icon": "announcements" },
+    {
+      "id": 3,
+      "label": "Transmisja Online",
+      "href": "https://www.youtube.com/@parafiaszczakowaTV",
+      "icon": "live",
+      "external": true
+    }
+  ]
+}

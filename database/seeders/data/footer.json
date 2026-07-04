@@ -1,0 +1,16 @@
+{
+  "officeHours": [
+    { "id": 1, "day": "Poniedziałek", "hours": "16:00 – 17:30" },
+    { "id": 2, "day": "Środa", "hours": "16:00 – 17:30" },
+    { "id": 3, "day": "Piątek", "hours": "16:00 – 17:30" },
+    { "id": 4, "day": "Sobota", "hours": "9:00 – 10:00" }
+  ],
+  "officeNote": "W sprawach pilnych prosimy o kontakt telefoniczny: +48 796 763 132",
+  "mapEmbedUrl": "https://www.google.com/maps?q=Parafia+%C5%9Aw.+El%C5%BCbiety+W%C4%99gierskiej,+Jaworzno&output=embed",
+  "mapLink": "https://www.google.com/maps/place/Parafia+%C5%9Aw.+El%C5%BCbiety+W%C4%99gierskiej+W+Jaworznie/@50.2396841,19.2911036,17z",
+  "legalLinks": [
+    { "id": 1, "label": "Polityka prywatności", "href": "/polityka-prywatnosci" },
+    { "id": 2, "label": "Deklaracja dostępności", "href": "/deklaracja-dostepnosci" }
+  ],
+  "copyrightText": "© 2026 Parafia św. Elżbiety Węgierskiej, Jaworzno-Szczakowa. Wszelkie prawa zastrzeżone."
+}

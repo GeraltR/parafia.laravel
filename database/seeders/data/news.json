@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "date": "2026-06-25",
+    "title": "Ogłoszenia duszpasterskie",
+    "excerpt": "Najważniejsze informacje na najbliższy tydzień parafialny.",
+    "image": "/img/news-1.jpg"
+  },
+  {
+    "id": 2,
+    "date": "2026-06-20",
+    "title": "Komunikat proboszcza",
+    "excerpt": "Nowy komunikat w sprawie harmonogramu renowacji kościoła.",
+    "image": "/img/news-2.jpg"
+  },
+  {
+    "id": 3,
+    "date": "2026-06-14",
+    "title": "Festyn Parafialny 2026",
+    "excerpt": "Relacja ze wspólnego święta naszej parafii.",
+    "image": "/img/news-3.jpg"
+  }
+]

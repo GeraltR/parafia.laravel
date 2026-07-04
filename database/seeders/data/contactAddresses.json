@@ -1,0 +1,13 @@
+{
+  "address": "ul. Jana III Sobieskiego 1, 43-602 Jaworzno",
+  "phone": "+48 (32) 617 72 11",
+  "social": {
+    "facebook": true,
+    "youtube": true,
+    "x": false,
+    "instagram": false,
+    "tiktok": false,
+    "pinterest": false,
+    "linkedin": false
+  }
+}

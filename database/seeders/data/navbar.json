@@ -1,0 +1,12 @@
+{
+  "items": [
+    { "id": 1, "label": "Strona główna", "href": "/" },
+    { "id": 2, "label": "Parafia", "href": "/kroniki" },
+    { "id": 3, "label": "Liturgia", "href": "#msze" },
+    { "id": 4, "label": "Sakramenty", "href": "#sakramenty" },
+    { "id": 5, "label": "Wspólnoty", "href": "#ruchy" },
+    { "id": 6, "label": "Aktualności", "href": "#aktualnosci" },
+    { "id": 7, "label": "Multimedia", "href": "#multimedia" },
+    { "id": 8, "label": "Kontakt", "href": "#kontakt" }
+  ]
+}

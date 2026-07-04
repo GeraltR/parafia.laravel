@@ -1,0 +1,45 @@
+[
+  {
+    "id": 1,
+    "icon": "mass",
+    "title": "Msze Święte",
+    "description": "Godziny Mszy w tygodniu i w niedzielę",
+    "href": "#msze"
+  },
+  {
+    "id": 2,
+    "icon": "sacraments",
+    "title": "Sakramenty",
+    "description": "Chrzest, ślub, bierzmowanie, pokuta, namaszczenie…",
+    "href": "#sakramenty"
+  },
+  {
+    "id": 3,
+    "icon": "announcements",
+    "title": "Ogłoszenia",
+    "description": "Bieżące ogłoszenia duszpasterskie",
+    "href": "#aktualnosci"
+  },
+  {
+    "id": 4,
+    "icon": "office",
+    "title": "Kancelaria",
+    "description": "Godziny urzędowania i sprawy parafialne",
+    "href": "#kontakt"
+  },
+  {
+    "id": 5,
+    "icon": "media",
+    "title": "Transmisje",
+    "description": "Msze Święte na żywo — YouTube",
+    "href": "https://www.youtube.com/@parafiaszczakowaTV",
+    "external": true
+  },
+  {
+    "id": 6,
+    "icon": "contact",
+    "title": "Kontakt",
+    "description": "Dane kontaktowe i dojazd",
+    "href": "#kontakt"
+  }
+]
