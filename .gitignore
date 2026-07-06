@@ -1,0 +1,42 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.fleet/
+.nova/
+.zed/
+
+# Logs
+*.log
+
+# Bitmaps
+*.jpg
+*.png
+
+# Env files (each app's .env stays local; only .env.example is committed)
+.env
+.env.*.local
+.env.backup
+.env.production
+
+# Dependencies (any app in the stack: laravel/vendor, admin/node_modules, web/node_modules, ...)
+vendor/
+node_modules/
+auth.json
+
+# Laravel app (laravel/)
+/laravel/public/build
+/laravel/public/hot
+/laravel/public/storage
+/laravel/storage/*.key
+/laravel/storage/pail
+/laravel/.phpunit.cache
+/laravel/.phpunit.result.cache
+/laravel/.phpactor.json
+
+Homestead.json
+Homestead.yaml
+sail
+todo.txt
+laravel/public/nowastrona3.html
