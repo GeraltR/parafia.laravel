@@ -1,5 +1,5 @@
 services:
-  app:
+  laravel.test:
     build:
       context: ./docker/php
     working_dir: /var/www/html
@@ -19,7 +19,7 @@ services:
     ports:
       - "${APP_PORT:-8080}:80"
     depends_on:
-      - app
+      - laravel.test
 
   mariadb:
     image: mariadb:11.4

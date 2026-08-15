@@ -31,4 +31,6 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 COPY conf.d/local.ini /usr/local/etc/php/conf.d/zzz-local.ini
 COPY conf.d/xdebug.ini /usr/local/etc/php/conf.d/zzz-xdebug.ini
 
+RUN useradd -ms /bin/bash -u 1000 sail
+
 WORKDIR /var/www/html
