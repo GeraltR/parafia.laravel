@@ -7,6 +7,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Social extends Model
 {
+    public const NETWORKS = [
+        'facebook',
+        'youtube',
+        'x',
+        'instagram',
+        'tiktok',
+        'pinterest',
+        'linkedin',
+    ];
+
     protected $table = 'social';
 
     protected $fillable = [
