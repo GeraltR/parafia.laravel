@@ -23,6 +23,8 @@ Route::put('/theme', [ThemeController::class, 'update']);
 
 Route::get('/navbar', [NavbarController::class, 'show']);
 Route::get('/hero', [HeroController::class, 'show']);
+Route::put('/hero', [HeroController::class, 'update']);
+Route::post('/hero/background-image', [HeroController::class, 'uploadBackgroundImage']);
 Route::get('/short-actions', [ShortActionItemController::class, 'index']);
 Route::get('/events', [EventItemController::class, 'index']);
 Route::get('/news', [NewsItemController::class, 'index']);
