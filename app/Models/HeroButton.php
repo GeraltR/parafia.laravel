@@ -13,6 +13,10 @@ class HeroButton extends Model
         'href',
         'icon',
         'external',
+        'text_color',
+        'text_color_hover',
+        'bg_color',
+        'bg_color_hover',
     ];
 
     protected function casts(): array

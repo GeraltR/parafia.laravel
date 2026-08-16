@@ -99,6 +99,89 @@ class HeroControllerTest extends TestCase
         $this->assertDatabaseCount('hero_buttons', 2);
     }
 
+    public function test_update_allows_empty_title(): void
+    {
+        $this->createHero();
+
+        $payload = [
+            'title' => '',
+            'titleWidth' => 10,
+            'titleFont' => '',
+            'titleVAlign' => 'center',
+            'subtitle' => '',
+            'subtitleWidth' => 8,
+            'subtitleFont' => '',
+            'subtitleVAlign' => 'center',
+            'keynote' => '',
+            'keynoteWidth' => 10,
+            'keynoteFont' => '',
+            'keynoteVAlign' => 'center',
+            'backgroundImage' => '/img/bg.png',
+            'buttons' => [],
+        ];
+
+        $response = $this->putJson('/api/hero', $payload);
+
+        $response->assertOk();
+        $response->assertJsonPath('data.title', '');
+    }
+
+    public function test_update_persists_color_fields_and_null_clears_them(): void
+    {
+        $hero = $this->createHero();
+        $buttonId = $hero->buttons()->where('label', 'Msze Swiete')->firstOrFail()->id;
+
+        $payload = [
+            'title' => 'Witaj',
+            'titleWidth' => 10,
+            'titleFont' => '',
+            'titleVAlign' => 'center',
+            'titleColor' => '#ff0000',
+            'subtitle' => 'Podtytul',
+            'subtitleWidth' => 8,
+            'subtitleFont' => '',
+            'subtitleVAlign' => 'center',
+            'subtitleColor' => '#00ff00',
+            'keynote' => 'Motto',
+            'keynoteWidth' => 10,
+            'keynoteFont' => '',
+            'keynoteVAlign' => 'center',
+            'backgroundImage' => '/img/bg.png',
+            'buttons' => [
+                [
+                    'id' => $buttonId,
+                    'label' => 'Msze Swiete',
+                    'href' => '#msze',
+                    'icon' => 'mass',
+                    'external' => false,
+                    'textColor' => '#111111',
+                    'textColorHover' => '#222222',
+                    'bgColor' => '#333333',
+                    'bgColorHover' => '#444444',
+                ],
+            ],
+        ];
+
+        $response = $this->putJson('/api/hero', $payload);
+
+        $response->assertOk();
+        $response->assertJsonPath('data.titleColor', '#ff0000');
+        $response->assertJsonPath('data.subtitleColor', '#00ff00');
+        $response->assertJsonPath('data.buttons.0.textColor', '#111111');
+        $response->assertJsonPath('data.buttons.0.textColorHover', '#222222');
+        $response->assertJsonPath('data.buttons.0.bgColor', '#333333');
+        $response->assertJsonPath('data.buttons.0.bgColorHover', '#444444');
+
+        $payload['titleColor'] = null;
+        $payload['buttons'][0]['textColor'] = null;
+
+        $response = $this->putJson('/api/hero', $payload);
+
+        $response->assertOk();
+        $response->assertJsonPath('data.titleColor', null);
+        $response->assertJsonPath('data.buttons.0.textColor', null);
+    }
+
     public function test_update_requires_valid_data(): void
     {
         $this->createHero();

@@ -10,14 +10,16 @@ class HeroService
     public function update(Hero $hero, array $data): Hero
     {
         $hero->update([
-            'title' => $data['title'],
+            'title' => $data['title'] ?? '',
             'title_width' => $data['titleWidth'],
             'title_font' => $data['titleFont'] ?? '',
             'title_v_align' => $data['titleVAlign'],
+            'title_color' => $data['titleColor'] ?? null,
             'subtitle' => $data['subtitle'] ?? '',
             'subtitle_width' => $data['subtitleWidth'],
             'subtitle_font' => $data['subtitleFont'] ?? '',
             'subtitle_v_align' => $data['subtitleVAlign'],
+            'subtitle_color' => $data['subtitleColor'] ?? null,
             'keynote' => $data['keynote'] ?? '',
             'keynote_width' => $data['keynoteWidth'],
             'keynote_font' => $data['keynoteFont'] ?? '',
@@ -40,6 +42,10 @@ class HeroService
                 'href' => $button['href'],
                 'icon' => $button['icon'],
                 'external' => $button['external'] ?? false,
+                'text_color' => $button['textColor'] ?? null,
+                'text_color_hover' => $button['textColorHover'] ?? null,
+                'bg_color' => $button['bgColor'] ?? null,
+                'bg_color_hover' => $button['bgColorHover'] ?? null,
             ];
 
             $existing = ! empty($button['id'])

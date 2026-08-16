@@ -14,14 +14,16 @@ class UpdateHeroRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'string'],
+            'title' => ['nullable', 'string'],
             'titleWidth' => ['required', 'integer', 'min:1', 'max:12'],
             'titleFont' => ['nullable', 'string'],
             'titleVAlign' => ['required', 'in:top,center,bottom'],
+            'titleColor' => ['nullable', 'string'],
             'subtitle' => ['nullable', 'string'],
             'subtitleWidth' => ['required', 'integer', 'min:1', 'max:12'],
             'subtitleFont' => ['nullable', 'string'],
             'subtitleVAlign' => ['required', 'in:top,center,bottom'],
+            'subtitleColor' => ['nullable', 'string'],
             'keynote' => ['nullable', 'string'],
             'keynoteWidth' => ['required', 'integer', 'min:1', 'max:12'],
             'keynoteFont' => ['nullable', 'string'],
@@ -33,6 +35,10 @@ class UpdateHeroRequest extends FormRequest
             'buttons.*.href' => ['required', 'string'],
             'buttons.*.icon' => ['required', 'in:mass,announcements,live'],
             'buttons.*.external' => ['nullable', 'boolean'],
+            'buttons.*.textColor' => ['nullable', 'string'],
+            'buttons.*.textColorHover' => ['nullable', 'string'],
+            'buttons.*.bgColor' => ['nullable', 'string'],
+            'buttons.*.bgColorHover' => ['nullable', 'string'],
         ];
     }
 }

@@ -15,6 +15,10 @@ class HeroButtonResource extends JsonResource
             'href' => $this->href,
             'icon' => $this->icon,
             'external' => (bool) $this->external,
+            'textColor' => $this->text_color,
+            'textColorHover' => $this->text_color_hover,
+            'bgColor' => $this->bg_color,
+            'bgColorHover' => $this->bg_color_hover,
         ];
     }
 }
