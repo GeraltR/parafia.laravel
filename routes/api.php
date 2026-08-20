@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ContactAddressController;
 use App\Http\Controllers\EventItemController;
+use App\Http\Controllers\FontController;
 use App\Http\Controllers\FooterController;
 use App\Http\Controllers\HeroController;
 use App\Http\Controllers\InfoExtraController;
@@ -14,9 +15,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
-            return $request->user();
-        })
-        ->middleware('auth:sanctum');
+    return $request->user();
+})
+    ->middleware('auth:sanctum');
 
 Route::get('/theme', [ThemeController::class, 'show']);
 Route::put('/theme', [ThemeController::class, 'update']);
@@ -31,4 +32,5 @@ Route::get('/news', [NewsItemController::class, 'index']);
 Route::get('/info-extra', [InfoExtraController::class, 'show']);
 Route::get('/footer', [FooterController::class, 'show']);
 Route::get('/social', [SocialController::class, 'index']);
+Route::get('/fonts', [FontController::class, 'index']);
 Route::get('/contact-addresses', [ContactAddressController::class, 'show']);
