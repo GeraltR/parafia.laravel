@@ -26,9 +26,15 @@ class AuthControllerTest extends TestCase
         ]);
 
         $response->assertOk();
-        $response->assertJsonStructure(['token', 'user' => ['id', 'name', 'email', 'permissionLevel', 'canWrite']]);
+        $response->assertJsonStructure([
+            'token',
+            'user' => ['id', 'name', 'email', 'permissionLevel', 'permissionLevelLabel', 'canWrite' => ['site', 'content', 'management']],
+        ]);
         $response->assertJsonPath('user.permissionLevel', 3);
-        $response->assertJsonPath('user.canWrite', true);
+        $response->assertJsonPath('user.permissionLevelLabel', 'Administrator');
+        $response->assertJsonPath('user.canWrite.site', true);
+        $response->assertJsonPath('user.canWrite.content', true);
+        $response->assertJsonPath('user.canWrite.management', false);
     }
 
     public function test_login_fails_with_wrong_password(): void
@@ -73,7 +79,9 @@ class AuthControllerTest extends TestCase
         $response->assertOk();
         $response->assertJsonPath('data.email', $user->email);
         $response->assertJsonPath('data.permissionLevel', 0);
-        $response->assertJsonPath('data.canWrite', false);
+        $response->assertJsonPath('data.canWrite.site', false);
+        $response->assertJsonPath('data.canWrite.content', false);
+        $response->assertJsonPath('data.canWrite.management', false);
     }
 
     public function test_logout_revokes_token(): void

@@ -8,9 +8,18 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EnsureCanWrite
 {
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, string $area): Response
     {
-        if (! $request->user()?->permission_level->canWrite()) {
+        $level = $request->user()?->permission_level;
+
+        $canWrite = match ($area) {
+            'site' => $level?->canWriteSite(),
+            'content' => $level?->canWriteContent(),
+            'management' => $level?->canWriteManagement(),
+            default => false,
+        };
+
+        if (! $canWrite) {
             abort(403, 'Brak uprawnień do zapisu zmian.');
         }
 

@@ -19,8 +19,18 @@ enum PermissionLevel: int
         };
     }
 
-    public function canWrite(): bool
+    public function canWriteContent(): bool
+    {
+        return $this->value >= self::Editor->value;
+    }
+
+    public function canWriteSite(): bool
     {
         return $this->value >= self::Administrator->value;
+    }
+
+    public function canWriteManagement(): bool
+    {
+        return $this->value >= self::Supervisor->value;
     }
 }

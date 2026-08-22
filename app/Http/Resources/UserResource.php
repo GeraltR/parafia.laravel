@@ -14,7 +14,12 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'permissionLevel' => $this->permission_level->value,
-            'canWrite' => $this->permission_level->canWrite(),
+            'permissionLevelLabel' => $this->permission_level->label(),
+            'canWrite' => [
+                'site' => $this->permission_level->canWriteSite(),
+                'content' => $this->permission_level->canWriteContent(),
+                'management' => $this->permission_level->canWriteManagement(),
+            ],
         ];
     }
 }

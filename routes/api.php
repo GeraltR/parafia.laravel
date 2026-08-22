@@ -27,13 +27,15 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::get('/theme', [ThemeController::class, 'show']);
-Route::put('/theme', [ThemeController::class, 'update'])->middleware(['auth:sanctum', 'can-write']);
+Route::put('/theme', [ThemeController::class, 'update'])
+    ->middleware(['auth:sanctum', 'can-write:site']);
 
 Route::get('/navbar', [NavbarController::class, 'show']);
 Route::get('/hero', [HeroController::class, 'show']);
-Route::put('/hero', [HeroController::class, 'update'])->middleware(['auth:sanctum', 'can-write']);
+Route::put('/hero', [HeroController::class, 'update'])
+    ->middleware(['auth:sanctum', 'can-write:site']);
 Route::post('/hero/background-image', [HeroController::class, 'uploadBackgroundImage'])
-    ->middleware(['auth:sanctum', 'can-write']);
+    ->middleware(['auth:sanctum', 'can-write:site']);
 Route::get('/short-actions', [ShortActionItemController::class, 'index']);
 Route::get('/events', [EventItemController::class, 'index']);
 Route::get('/news', [NewsItemController::class, 'index']);
