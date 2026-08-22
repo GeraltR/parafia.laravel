@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactAddressController;
 use App\Http\Controllers\EventItemController;
 use App\Http\Controllers\FontController;
@@ -19,13 +20,20 @@ Route::get('/user', function (Request $request) {
 })
     ->middleware('auth:sanctum');
 
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/me', [AuthController::class, 'me']);
+});
+
 Route::get('/theme', [ThemeController::class, 'show']);
-Route::put('/theme', [ThemeController::class, 'update']);
+Route::put('/theme', [ThemeController::class, 'update'])->middleware(['auth:sanctum', 'can-write']);
 
 Route::get('/navbar', [NavbarController::class, 'show']);
 Route::get('/hero', [HeroController::class, 'show']);
-Route::put('/hero', [HeroController::class, 'update']);
-Route::post('/hero/background-image', [HeroController::class, 'uploadBackgroundImage']);
+Route::put('/hero', [HeroController::class, 'update'])->middleware(['auth:sanctum', 'can-write']);
+Route::post('/hero/background-image', [HeroController::class, 'uploadBackgroundImage'])
+    ->middleware(['auth:sanctum', 'can-write']);
 Route::get('/short-actions', [ShortActionItemController::class, 'index']);
 Route::get('/events', [EventItemController::class, 'index']);
 Route::get('/news', [NewsItemController::class, 'index']);

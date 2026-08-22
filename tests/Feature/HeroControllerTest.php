@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Enums\PermissionLevel;
 use App\Models\Hero;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -47,6 +49,34 @@ class HeroControllerTest extends TestCase
         return $hero;
     }
 
+    private function actingAsLevel(PermissionLevel $level): User
+    {
+        $user = User::factory()->create(['permission_level' => $level]);
+        $this->actingAs($user, 'sanctum');
+
+        return $user;
+    }
+
+    private function validPayload(): array
+    {
+        return [
+            'title' => 'Witaj',
+            'titleWidth' => 10,
+            'titleFont' => '',
+            'titleVAlign' => 'center',
+            'subtitle' => 'Podtytul',
+            'subtitleWidth' => 8,
+            'subtitleFont' => '',
+            'subtitleVAlign' => 'center',
+            'keynote' => 'Motto',
+            'keynoteWidth' => 10,
+            'keynoteFont' => '',
+            'keynoteVAlign' => 'center',
+            'backgroundImage' => '/img/bg.png',
+            'buttons' => [],
+        ];
+    }
+
     public function test_show_returns_hero_with_buttons(): void
     {
         $this->createHero();
@@ -58,8 +88,44 @@ class HeroControllerTest extends TestCase
         $response->assertJsonCount(2, 'data.buttons');
     }
 
+    public function test_update_requires_authentication(): void
+    {
+        $this->createHero();
+
+        $response = $this->putJson('/api/hero', $this->validPayload());
+
+        $response->assertStatus(401);
+    }
+
+    public function test_update_forbidden_for_viewer_and_editor(): void
+    {
+        $this->createHero();
+
+        foreach ([PermissionLevel::Viewer, PermissionLevel::Editor] as $level) {
+            $this->actingAsLevel($level);
+
+            $response = $this->putJson('/api/hero', $this->validPayload());
+
+            $response->assertStatus(403);
+        }
+    }
+
+    public function test_update_allowed_for_administrator_and_supervisor(): void
+    {
+        $this->createHero();
+
+        foreach ([PermissionLevel::Administrator, PermissionLevel::Supervisor] as $level) {
+            $this->actingAsLevel($level);
+
+            $response = $this->putJson('/api/hero', $this->validPayload());
+
+            $response->assertOk();
+        }
+    }
+
     public function test_update_updates_hero_fields_and_syncs_buttons(): void
     {
+        $this->actingAsLevel(PermissionLevel::Administrator);
         $hero = $this->createHero();
         $keptButtonId = $hero->buttons()->where('label', 'Msze Swiete')->firstOrFail()->id;
 
@@ -101,6 +167,7 @@ class HeroControllerTest extends TestCase
 
     public function test_update_allows_empty_title(): void
     {
+        $this->actingAsLevel(PermissionLevel::Administrator);
         $this->createHero();
 
         $payload = [
@@ -128,6 +195,7 @@ class HeroControllerTest extends TestCase
 
     public function test_update_persists_color_fields_and_null_clears_them(): void
     {
+        $this->actingAsLevel(PermissionLevel::Administrator);
         $hero = $this->createHero();
         $buttonId = $hero->buttons()->where('label', 'Msze Swiete')->firstOrFail()->id;
 
@@ -184,6 +252,7 @@ class HeroControllerTest extends TestCase
 
     public function test_update_requires_valid_data(): void
     {
+        $this->actingAsLevel(PermissionLevel::Administrator);
         $this->createHero();
 
         $response = $this->putJson('/api/hero', [
@@ -193,9 +262,22 @@ class HeroControllerTest extends TestCase
         $response->assertStatus(422);
     }
 
+    public function test_upload_background_image_requires_write_permission(): void
+    {
+        Storage::fake('public');
+        $this->actingAsLevel(PermissionLevel::Editor);
+
+        $response = $this->postJson('/api/hero/background-image', [
+            'image' => UploadedFile::fake()->image('bg.jpg'),
+        ]);
+
+        $response->assertStatus(403);
+    }
+
     public function test_upload_background_image_stores_file_and_returns_url(): void
     {
         Storage::fake('public');
+        $this->actingAsLevel(PermissionLevel::Administrator);
 
         $response = $this->postJson('/api/hero/background-image', [
             'image' => UploadedFile::fake()->image('bg.jpg'),
@@ -214,6 +296,7 @@ class HeroControllerTest extends TestCase
     public function test_upload_background_image_rejects_non_image_files(): void
     {
         Storage::fake('public');
+        $this->actingAsLevel(PermissionLevel::Administrator);
 
         $response = $this->postJson('/api/hero/background-image', [
             'image' => UploadedFile::fake()->create('document.pdf', 10),
