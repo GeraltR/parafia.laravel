@@ -56,6 +56,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Frontend URL
+    |--------------------------------------------------------------------------
+    |
+    | Base URL of the parafiasetup SPA. Used to build links (e.g. the
+    | password reset link) that must point at the frontend rather than
+    | this API.
+    |
+    */
+
+    'frontend_url' => env('FRONTEND_URL', 'http://localhost:5174'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

@@ -9,6 +9,7 @@ use App\Http\Controllers\HeroController;
 use App\Http\Controllers\InfoExtraController;
 use App\Http\Controllers\NavbarController;
 use App\Http\Controllers\NewsItemController;
+use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ShortActionItemController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\ThemeController;
@@ -22,6 +23,10 @@ Route::get('/user', function (Request $request) {
     ->middleware('auth:sanctum');
 
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
+Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])
+    ->middleware('throttle:5,1');
+Route::post('/reset-password', [PasswordResetController::class, 'reset'])
+    ->middleware('throttle:5,1');
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
