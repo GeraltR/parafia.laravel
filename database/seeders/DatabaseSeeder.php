@@ -50,6 +50,7 @@ class DatabaseSeeder extends Seeder
             EventItemSeeder::class,
             NewsItemSeeder::class,
             InfoExtraSeeder::class,
+            ContentTopicSeeder::class,
         ]);
     }
 }

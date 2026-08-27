@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactAddressController;
+use App\Http\Controllers\ContentTopicController;
 use App\Http\Controllers\EventItemController;
 use App\Http\Controllers\FontController;
 use App\Http\Controllers\FooterController;
@@ -57,3 +58,16 @@ Route::get('/footer', [FooterController::class, 'show']);
 Route::get('/social', [SocialController::class, 'index']);
 Route::get('/fonts', [FontController::class, 'index']);
 Route::get('/contact-addresses', [ContactAddressController::class, 'show']);
+
+Route::get('/content-topics', [ContentTopicController::class, 'index']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/content-topics/manage', [ContentTopicController::class, 'manage']);
+});
+Route::post('/content-topics', [ContentTopicController::class, 'store'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+Route::post('/content-topics/upload-image', [ContentTopicController::class, 'uploadImage'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+Route::put('/content-topics/{contentTopic}', [ContentTopicController::class, 'update'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+Route::delete('/content-topics/{contentTopic}', [ContentTopicController::class, 'destroy'])
+    ->middleware(['auth:sanctum', 'can-write:content']);

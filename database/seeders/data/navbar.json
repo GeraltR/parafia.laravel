@@ -1,18 +1,9 @@
 {
   "items": [
     { "label": "Strona główna", "href": "/", "locked": true },
-    { "label": "Parafia", "href": "/kroniki" },
-    { "label": "Liturgia", "href": "#msze" },
-    {
-      "label": "Sakramenty",
-      "href": "#sakramenty",
-      "locked": true,
-      "children": [
-        { "label": "Chrzest", "href": "#chrzest" },
-        { "label": "Bierzmowanie", "href": "#bierzmowanie" },
-        { "label": "Małżeństwo", "href": "#malzenstwo" }
-      ]
-    },
+    { "label": "Parafia", "href": "/parafia" },
+    { "label": "Liturgia", "href": "/liturgia" },
+    { "label": "Sakramenty", "href": "#sakramenty", "locked": true },
     { "label": "Wspólnoty", "href": "#ruchy" },
     { "label": "Aktualności", "href": "#aktualnosci", "locked": true },
     { "label": "Multimedia", "href": "#multimedia" },
