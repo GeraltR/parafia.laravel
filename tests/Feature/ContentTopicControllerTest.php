@@ -126,7 +126,7 @@ class ContentTopicControllerTest extends TestCase
     {
         $author = $this->actingAsLevel(PermissionLevel::Editor);
 
-        foreach (range(1, 4) as $i) {
+        foreach (range(1, 7) as $i) {
             ContentTopic::create([
                 'page' => 'sakramenty', 'title' => "Temat {$i}", 'author_id' => $author->id, 'order' => $i,
             ]);
@@ -134,7 +134,7 @@ class ContentTopicControllerTest extends TestCase
 
         $response = $this->postJson('/api/content-topics', $this->validPayload($author, [
             'page' => 'sakramenty',
-            'title' => 'Piąty temat',
+            'title' => 'Ósmy temat',
         ]));
 
         $response->assertStatus(422);

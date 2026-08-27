@@ -11,7 +11,7 @@ enum ContentPageSlug: string
     public function maxTopics(): ?int
     {
         return match ($this) {
-            self::Sakramenty => 4,
+            self::Sakramenty => 7,
             default => null,
         };
     }
