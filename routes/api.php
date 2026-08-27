@@ -42,6 +42,8 @@ Route::put('/theme', [ThemeController::class, 'update'])
     ->middleware(['auth:sanctum', 'can-write:site']);
 
 Route::get('/navbar', [NavbarController::class, 'show']);
+Route::put('/navbar', [NavbarController::class, 'update'])
+    ->middleware(['auth:sanctum', 'can-write:site']);
 Route::get('/hero', [HeroController::class, 'show']);
 Route::put('/hero', [HeroController::class, 'update'])
     ->middleware(['auth:sanctum', 'can-write:site']);

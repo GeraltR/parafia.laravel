@@ -13,6 +13,8 @@ class NavItemResource extends JsonResource
             'id' => $this->id,
             'label' => $this->label,
             'href' => $this->href,
+            'isLocked' => $this->is_locked,
+            'children' => NavItemResource::collection($this->whenLoaded('children')),
         ];
     }
 }

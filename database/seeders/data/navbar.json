@@ -1,12 +1,21 @@
 {
   "items": [
-    { "id": 1, "label": "Strona główna", "href": "/" },
-    { "id": 2, "label": "Parafia", "href": "/kroniki" },
-    { "id": 3, "label": "Liturgia", "href": "#msze" },
-    { "id": 4, "label": "Sakramenty", "href": "#sakramenty" },
-    { "id": 5, "label": "Wspólnoty", "href": "#ruchy" },
-    { "id": 6, "label": "Aktualności", "href": "#aktualnosci" },
-    { "id": 7, "label": "Multimedia", "href": "#multimedia" },
-    { "id": 8, "label": "Kontakt", "href": "#kontakt" }
+    { "label": "Strona główna", "href": "/", "locked": true },
+    { "label": "Parafia", "href": "/kroniki" },
+    { "label": "Liturgia", "href": "#msze" },
+    {
+      "label": "Sakramenty",
+      "href": "#sakramenty",
+      "locked": true,
+      "children": [
+        { "label": "Chrzest", "href": "#chrzest" },
+        { "label": "Bierzmowanie", "href": "#bierzmowanie" },
+        { "label": "Małżeństwo", "href": "#malzenstwo" }
+      ]
+    },
+    { "label": "Wspólnoty", "href": "#ruchy" },
+    { "label": "Aktualności", "href": "#aktualnosci", "locked": true },
+    { "label": "Multimedia", "href": "#multimedia" },
+    { "label": "Kontakt", "href": "#kontakt", "locked": true }
   ]
 }
