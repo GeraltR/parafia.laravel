@@ -13,7 +13,7 @@ class ShortActionItemSeeder extends Seeder
         ShortActionsConfig::create([
             'title_size' => '0.84rem',
             'title_color' => '#1a365d',
-            'subtitle_size' => '0.72rem',
+            'subtitle_size' => '0.62rem',
             'subtitle_color' => '#5a6b7d',
             'bg_color' => '#ffffff',
             'bg_color_hover' => '#f4f6f8',
