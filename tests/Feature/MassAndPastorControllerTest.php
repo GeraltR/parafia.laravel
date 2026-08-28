@@ -93,8 +93,24 @@ class MassAndPastorControllerTest extends TestCase
         $response->assertJsonCount(1, 'data.massTimes');
         $response->assertJsonCount(1, 'data.pastors');
         $response->assertJsonPath('data.config.positionColor', '#111111');
+        $response->assertJsonPath('data.pastors.0.isActive', true);
         $this->assertDatabaseCount('mass_times', 1);
         $this->assertDatabaseCount('pastors', 1);
+    }
+
+    public function test_update_persists_pastor_active_flag(): void
+    {
+        MassAndPastorSection::create([]);
+        $this->actingAsLevel(PermissionLevel::Editor);
+
+        $payload = $this->validPayload();
+        $payload['pastors'][0]['isActive'] = false;
+
+        $response = $this->putJson('/api/mass-and-pastor', $payload);
+
+        $response->assertOk();
+        $response->assertJsonPath('data.pastors.0.isActive', false);
+        $this->assertDatabaseHas('pastors', ['full_name' => 'ks. Jan Kowalski', 'active' => false]);
     }
 
     public function test_update_syncs_existing_children_by_id(): void

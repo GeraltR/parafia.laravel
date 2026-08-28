@@ -62,6 +62,7 @@ class MassAndPastorService
                 'photo_url' => $pastor['photoUrl'] ?? null,
                 'duties' => $pastor['duties'] ?? '',
                 'order' => $index,
+                'active' => $pastor['isActive'] ?? true,
             ];
 
             $existing = ! empty($pastor['id']) ? $section->pastors()->find($pastor['id']) : null;

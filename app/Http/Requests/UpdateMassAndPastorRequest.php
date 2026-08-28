@@ -32,6 +32,7 @@ class UpdateMassAndPastorRequest extends FormRequest
             'pastors.*.fullName' => ['required', 'string'],
             'pastors.*.photoUrl' => ['nullable', 'string'],
             'pastors.*.duties' => ['nullable', 'string'],
+            'pastors.*.isActive' => ['nullable', 'boolean'],
         ];
     }
 }

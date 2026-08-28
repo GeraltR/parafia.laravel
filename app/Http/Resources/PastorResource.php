@@ -16,6 +16,7 @@ class PastorResource extends JsonResource
             'photoUrl' => $this->photo_url,
             'duties' => $this->duties,
             'order' => $this->order,
+            'isActive' => $this->active,
         ];
     }
 }

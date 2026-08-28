@@ -14,7 +14,15 @@ class Pastor extends Model
         'photo_url',
         'duties',
         'order',
+        'active',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'active' => 'boolean',
+        ];
+    }
 
     public function section(): BelongsTo
     {
