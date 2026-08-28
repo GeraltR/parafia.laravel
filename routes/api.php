@@ -74,6 +74,8 @@ Route::get('/events', [EventItemController::class, 'index']);
 Route::get('/news', [NewsItemController::class, 'index']);
 Route::get('/info-extra', [InfoExtraController::class, 'show']);
 Route::get('/footer', [FooterController::class, 'show']);
+Route::put('/footer', [FooterController::class, 'update'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
 Route::get('/social', [SocialController::class, 'index']);
 Route::put('/social', [SocialController::class, 'update'])
     ->middleware(['auth:sanctum', 'can-write:site']);

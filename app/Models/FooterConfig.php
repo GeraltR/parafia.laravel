@@ -8,10 +8,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class FooterConfig extends Model
 {
     protected $fillable = [
+        'office_title',
         'office_note',
         'map_embed_url',
         'map_link',
         'copyright_text',
+        'bg_color',
+        'title_font',
+        'title_size',
+        'title_color',
     ];
 
     public function contactAddresses(): HasMany

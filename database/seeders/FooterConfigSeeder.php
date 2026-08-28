@@ -14,10 +14,13 @@ class FooterConfigSeeder extends Seeder
         $social = json_decode(file_get_contents(database_path('seeders/data/social.json')), true);
 
         $footerConfig = FooterConfig::create([
+            'office_title' => $footer['officeTitle'],
             'office_note' => $footer['officeNote'],
             'map_embed_url' => $footer['mapEmbedUrl'],
             'map_link' => $footer['mapLink'],
             'copyright_text' => $footer['copyrightText'],
+            'title_size' => '0.74rem',
+            'title_color' => '#ffffff',
         ]);
 
         foreach ($footer['officeHours'] as $officeHour) {

@@ -18,6 +18,8 @@ class OfficeHourResource extends JsonResource
                 Carbon::parse($this->hours_on)->format('H:i'),
                 Carbon::parse($this->hours_end)->format('H:i'),
             ),
+            'hoursOn' => Carbon::parse($this->hours_on)->format('H:i'),
+            'hoursEnd' => Carbon::parse($this->hours_end)->format('H:i'),
         ];
     }
 }

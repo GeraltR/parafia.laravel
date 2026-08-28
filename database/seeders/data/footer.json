@@ -1,4 +1,5 @@
 {
+  "officeTitle": "Godziny otwarcia kancelarii",
   "officeHours": [
     { "id": 1, "day": "Poniedziałek", "hours": "16:00 – 17:30" },
     { "id": 2, "day": "Środa", "hours": "16:00 – 17:30" },
