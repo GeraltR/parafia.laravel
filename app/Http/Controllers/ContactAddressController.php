@@ -2,14 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateContactAddressRequest;
 use App\Models\ContactAddress;
 use App\Models\FooterConfig;
 use App\Models\Social;
+use App\Services\ContactAddressService;
 use Illuminate\Http\JsonResponse;
 
 class ContactAddressController extends Controller
 {
+    public function __construct(private readonly ContactAddressService $contactAddressService) {}
+
     public function show(): JsonResponse
+    {
+        return response()->json(['data' => $this->payload()]);
+    }
+
+    public function update(UpdateContactAddressRequest $request): JsonResponse
+    {
+        $this->contactAddressService->update($request->validated());
+
+        return response()->json(['data' => $this->payload()]);
+    }
+
+    private function payload(): array
     {
         $footerConfig = FooterConfig::firstOrCreate();
         $contact = ContactAddress::firstOrCreate([], [
@@ -27,13 +43,14 @@ class ContactAddressController extends Controller
             ->mapWithKeys(fn (string $network) => [$network => (bool) ($visibilityByNetwork[$network] ?? false)])
             ->all();
 
-        return response()->json([
-            'data' => [
-                'id' => $contact->id,
-                'address' => "{$contact->street}, {$contact->post_code} {$contact->city}",
-                'phone' => $contact->phone,
-                'social' => $visibility,
-            ],
-        ]);
+        return [
+            'id' => $contact->id,
+            'address' => "{$contact->street}, {$contact->post_code} {$contact->city}",
+            'street' => $contact->street,
+            'city' => $contact->city,
+            'postCode' => $contact->post_code,
+            'phone' => $contact->phone,
+            'social' => $visibility,
+        ];
     }
 }

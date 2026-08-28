@@ -75,8 +75,12 @@ Route::get('/news', [NewsItemController::class, 'index']);
 Route::get('/info-extra', [InfoExtraController::class, 'show']);
 Route::get('/footer', [FooterController::class, 'show']);
 Route::get('/social', [SocialController::class, 'index']);
+Route::put('/social', [SocialController::class, 'update'])
+    ->middleware(['auth:sanctum', 'can-write:site']);
 Route::get('/fonts', [FontController::class, 'index']);
 Route::get('/contact-addresses', [ContactAddressController::class, 'show']);
+Route::put('/contact-addresses', [ContactAddressController::class, 'update'])
+    ->middleware(['auth:sanctum', 'can-write:site']);
 
 Route::get('/content-topics', [ContentTopicController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {
