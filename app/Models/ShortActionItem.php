@@ -8,6 +8,7 @@ class ShortActionItem extends Model
 {
     protected $fillable = [
         'icon',
+        'icon_url',
         'title',
         'description',
         'href',

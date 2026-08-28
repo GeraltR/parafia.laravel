@@ -12,6 +12,7 @@ class ShortActionItemResource extends JsonResource
         return [
             'id' => $this->id,
             'icon' => $this->icon,
+            'iconUrl' => $this->icon_url,
             'title' => $this->title,
             'description' => $this->description,
             'href' => $this->href,

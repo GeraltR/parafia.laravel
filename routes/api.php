@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssociationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactAddressController;
 use App\Http\Controllers\ContentTopicController;
@@ -8,10 +9,11 @@ use App\Http\Controllers\FontController;
 use App\Http\Controllers\FooterController;
 use App\Http\Controllers\HeroController;
 use App\Http\Controllers\InfoExtraController;
+use App\Http\Controllers\MassAndPastorController;
 use App\Http\Controllers\NavbarController;
 use App\Http\Controllers\NewsItemController;
 use App\Http\Controllers\PasswordResetController;
-use App\Http\Controllers\ShortActionItemController;
+use App\Http\Controllers\ShortActionController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\UserController;
@@ -50,7 +52,24 @@ Route::put('/hero', [HeroController::class, 'update'])
     ->middleware(['auth:sanctum', 'can-write:site']);
 Route::post('/hero/background-image', [HeroController::class, 'uploadBackgroundImage'])
     ->middleware(['auth:sanctum', 'can-write:site']);
-Route::get('/short-actions', [ShortActionItemController::class, 'index']);
+Route::get('/short-actions', [ShortActionController::class, 'show']);
+Route::put('/short-actions', [ShortActionController::class, 'update'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+Route::post('/short-actions/upload-icon', [ShortActionController::class, 'uploadIcon'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+
+Route::get('/mass-and-pastor', [MassAndPastorController::class, 'show']);
+Route::put('/mass-and-pastor', [MassAndPastorController::class, 'update'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+Route::post('/mass-and-pastor/upload-photo', [MassAndPastorController::class, 'uploadPhoto'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+
+Route::get('/associations', [AssociationController::class, 'show']);
+Route::put('/associations', [AssociationController::class, 'update'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+Route::post('/associations/upload-image', [AssociationController::class, 'uploadImage'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+
 Route::get('/events', [EventItemController::class, 'index']);
 Route::get('/news', [NewsItemController::class, 'index']);
 Route::get('/info-extra', [InfoExtraController::class, 'show']);

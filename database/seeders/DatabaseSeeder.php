@@ -51,6 +51,8 @@ class DatabaseSeeder extends Seeder
             NewsItemSeeder::class,
             InfoExtraSeeder::class,
             ContentTopicSeeder::class,
+            MassAndPastorSeeder::class,
+            AssociationSeeder::class,
         ]);
     }
 }
