@@ -68,6 +68,31 @@ class ShortActionControllerTest extends TestCase
         $response->assertJsonCount(6, 'data.items');
     }
 
+    public function test_show_creates_default_config_and_backfills_to_six_items(): void
+    {
+        $this->assertDatabaseCount('short_actions_configs', 0);
+        $this->assertDatabaseCount('short_action_items', 0);
+
+        $response = $this->getJson('/api/short-actions');
+
+        $response->assertOk();
+        $response->assertJsonCount(6, 'data.items');
+        $this->assertDatabaseCount('short_actions_configs', 1);
+        $this->assertDatabaseCount('short_action_items', 6);
+    }
+
+    public function test_show_backfills_only_missing_items_when_some_already_exist(): void
+    {
+        ShortActionsConfig::create([]);
+        ShortActionItem::create(['icon' => 'mass', 'title' => 'A', 'description' => 'B', 'href' => '/']);
+
+        $response = $this->getJson('/api/short-actions');
+
+        $response->assertOk();
+        $response->assertJsonCount(6, 'data.items');
+        $this->assertDatabaseCount('short_action_items', 6);
+    }
+
     public function test_update_requires_authentication(): void
     {
         $items = $this->seedSixItems();

@@ -21,7 +21,7 @@ class AssociationController extends Controller
 
     public function update(UpdateAssociationsRequest $request): JsonResponse
     {
-        $config = AssociationsConfig::firstOrFail();
+        $config = AssociationsConfig::firstOrCreate();
         $this->associationService->update($config, $request->validated());
 
         return response()->json(['data' => $this->payload()]);
@@ -39,7 +39,8 @@ class AssociationController extends Controller
 
     private function payload(): array
     {
-        $config = AssociationsConfig::with('associations')->firstOrFail();
+        $config = AssociationsConfig::firstOrCreate();
+        $config->load('associations');
 
         return [
             'config' => AssociationsConfigResource::make($config),

@@ -51,6 +51,18 @@ class MassAndPastorControllerTest extends TestCase
         $response->assertJsonCount(1, 'data.pastors');
     }
 
+    public function test_show_creates_default_row_when_missing(): void
+    {
+        $this->assertDatabaseCount('mass_and_pastor_sections', 0);
+
+        $response = $this->getJson('/api/mass-and-pastor');
+
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data.massTimes');
+        $response->assertJsonCount(0, 'data.pastors');
+        $this->assertDatabaseCount('mass_and_pastor_sections', 1);
+    }
+
     public function test_update_requires_authentication(): void
     {
         MassAndPastorSection::create([]);

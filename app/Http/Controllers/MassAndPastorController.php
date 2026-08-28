@@ -22,7 +22,7 @@ class MassAndPastorController extends Controller
 
     public function update(UpdateMassAndPastorRequest $request): JsonResponse
     {
-        $section = MassAndPastorSection::firstOrFail();
+        $section = MassAndPastorSection::firstOrCreate();
         $this->massAndPastorService->update($section, $request->validated());
 
         return response()->json(['data' => $this->payload()]);
@@ -40,7 +40,8 @@ class MassAndPastorController extends Controller
 
     private function payload(): array
     {
-        $section = MassAndPastorSection::with(['massTimes', 'pastors'])->firstOrFail();
+        $section = MassAndPastorSection::firstOrCreate();
+        $section->load(['massTimes', 'pastors']);
 
         return [
             'config' => MassAndPastorSectionResource::make($section),

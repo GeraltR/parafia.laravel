@@ -54,6 +54,16 @@ class ThemeControllerTest extends TestCase
         $response->assertJsonPath('data.title', 'Parafia');
     }
 
+    public function test_show_creates_default_row_when_missing(): void
+    {
+        $this->assertDatabaseCount('themes', 0);
+
+        $response = $this->getJson('/api/theme');
+
+        $response->assertOk();
+        $this->assertDatabaseCount('themes', 1);
+    }
+
     public function test_update_requires_authentication(): void
     {
         $this->createTheme();

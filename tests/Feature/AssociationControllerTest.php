@@ -33,6 +33,17 @@ class AssociationControllerTest extends TestCase
         $response->assertJsonCount(1, 'data.items');
     }
 
+    public function test_show_creates_default_row_when_missing(): void
+    {
+        $this->assertDatabaseCount('associations_configs', 0);
+
+        $response = $this->getJson('/api/associations');
+
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data.items');
+        $this->assertDatabaseCount('associations_configs', 1);
+    }
+
     public function test_update_requires_authentication(): void
     {
         AssociationsConfig::create([]);

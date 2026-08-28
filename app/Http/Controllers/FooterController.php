@@ -9,8 +9,10 @@ class FooterController extends Controller
 {
     public function show(): FooterResource
     {
-        return FooterResource::make(
-            FooterConfig::with(['officeHours', 'legalLinks'])->firstOrFail()
-        );
+        $footer = FooterConfig::firstOrCreate();
+        $footer->wasRecentlyCreated = false;
+        $footer->load(['officeHours', 'legalLinks']);
+
+        return FooterResource::make($footer);
     }
 }

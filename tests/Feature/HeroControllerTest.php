@@ -88,6 +88,17 @@ class HeroControllerTest extends TestCase
         $response->assertJsonCount(2, 'data.buttons');
     }
 
+    public function test_show_creates_default_row_when_missing(): void
+    {
+        $this->assertDatabaseCount('heroes', 0);
+
+        $response = $this->getJson('/api/hero');
+
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data.buttons');
+        $this->assertDatabaseCount('heroes', 1);
+    }
+
     public function test_update_requires_authentication(): void
     {
         $this->createHero();

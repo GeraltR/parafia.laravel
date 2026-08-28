@@ -11,16 +11,30 @@ use Illuminate\Http\JsonResponse;
 
 class HeroController extends Controller
 {
+    private const DEFAULTS = [
+        'title_width' => 10,
+        'title_v_align' => 'center',
+        'subtitle_width' => 8,
+        'subtitle_v_align' => 'center',
+        'keynote_width' => 10,
+        'keynote_v_align' => 'center',
+    ];
+
     public function __construct(private readonly HeroService $heroService) {}
 
     public function show(): HeroResource
     {
-        return HeroResource::make(Hero::with('buttons')->firstOrFail());
+        $hero = Hero::firstOrCreate([], self::DEFAULTS);
+        $hero->wasRecentlyCreated = false;
+        $hero->load('buttons');
+
+        return HeroResource::make($hero);
     }
 
     public function update(UpdateHeroRequest $request): HeroResource
     {
-        $hero = Hero::with('buttons')->firstOrFail();
+        $hero = Hero::firstOrCreate([], self::DEFAULTS);
+        $hero->load('buttons');
         $hero = $this->heroService->update($hero, $request->validated());
 
         return HeroResource::make($hero);
