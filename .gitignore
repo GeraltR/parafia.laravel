@@ -40,3 +40,4 @@ Homestead.yaml
 sail
 todo.txt
 laravel/public/nowastrona3.html
+.phpunit.result.cache
