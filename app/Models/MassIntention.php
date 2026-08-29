@@ -5,23 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class NewsItem extends Model
+class MassIntention extends Model
 {
     protected $fillable = [
         'date',
-        'title',
-        'excerpt',
-        'image',
-        'body',
+        'time',
+        'intention',
+        'is_holiday',
+        'day_description',
         'author_id',
-        'show_image_on_full_content',
     ];
 
     protected function casts(): array
     {
         return [
             'date' => 'date',
-            'show_image_on_full_content' => 'boolean',
+            'is_holiday' => 'boolean',
         ];
     }
 

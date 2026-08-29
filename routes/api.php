@@ -10,6 +10,7 @@ use App\Http\Controllers\FooterController;
 use App\Http\Controllers\HeroController;
 use App\Http\Controllers\InfoExtraController;
 use App\Http\Controllers\MassAndPastorController;
+use App\Http\Controllers\MassIntentionController;
 use App\Http\Controllers\NavbarController;
 use App\Http\Controllers\NewsItemController;
 use App\Http\Controllers\PasswordResetController;
@@ -71,7 +72,42 @@ Route::post('/associations/upload-image', [AssociationController::class, 'upload
     ->middleware(['auth:sanctum', 'can-write:content']);
 
 Route::get('/events', [EventItemController::class, 'index']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/events/manage', [EventItemController::class, 'manage']);
+});
+Route::post('/events', [EventItemController::class, 'store'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+Route::put('/events/{eventItem}', [EventItemController::class, 'update'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+Route::delete('/events/{eventItem}', [EventItemController::class, 'destroy'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+
 Route::get('/news', [NewsItemController::class, 'index']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/news/manage', [NewsItemController::class, 'manage']);
+});
+Route::post('/news', [NewsItemController::class, 'store'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+Route::post('/news/upload-image', [NewsItemController::class, 'uploadImage'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+Route::put('/news/{newsItem}', [NewsItemController::class, 'update'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+Route::delete('/news/{newsItem}', [NewsItemController::class, 'destroy'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+
+Route::get('/mass-intentions', [MassIntentionController::class, 'index']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/mass-intentions/manage', [MassIntentionController::class, 'manage']);
+});
+Route::post('/mass-intentions', [MassIntentionController::class, 'store'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+Route::put('/mass-intentions/config', [MassIntentionController::class, 'updateConfig'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+Route::put('/mass-intentions/{massIntention}', [MassIntentionController::class, 'update'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+Route::delete('/mass-intentions/{massIntention}', [MassIntentionController::class, 'destroy'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+
 Route::get('/info-extra', [InfoExtraController::class, 'show']);
 Route::get('/footer', [FooterController::class, 'show']);
 Route::put('/footer', [FooterController::class, 'update'])

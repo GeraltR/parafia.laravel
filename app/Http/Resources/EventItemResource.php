@@ -16,6 +16,11 @@ class EventItemResource extends JsonResource
             'time' => Carbon::parse($this->time)->format('H:i'),
             'title' => $this->title,
             'description' => $this->description,
+            'body' => $this->body,
+            'author' => $this->whenLoaded(
+                'author',
+                fn () => $this->author ? ['id' => $this->author->id, 'name' => $this->author->name] : null
+            ),
         ];
     }
 }
