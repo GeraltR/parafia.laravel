@@ -55,9 +55,9 @@ Route::post('/hero/background-image', [HeroController::class, 'uploadBackgroundI
     ->middleware(['auth:sanctum', 'can-write:site']);
 Route::get('/short-actions', [ShortActionController::class, 'show']);
 Route::put('/short-actions', [ShortActionController::class, 'update'])
-    ->middleware(['auth:sanctum', 'can-write:content']);
+    ->middleware(['auth:sanctum', 'can-write:site']);
 Route::post('/short-actions/upload-icon', [ShortActionController::class, 'uploadIcon'])
-    ->middleware(['auth:sanctum', 'can-write:content']);
+    ->middleware(['auth:sanctum', 'can-write:site']);
 
 Route::get('/mass-and-pastor', [MassAndPastorController::class, 'show']);
 Route::put('/mass-and-pastor', [MassAndPastorController::class, 'update'])
@@ -111,7 +111,7 @@ Route::delete('/mass-intentions/{massIntention}', [MassIntentionController::clas
 Route::get('/info-extra', [InfoExtraController::class, 'show']);
 Route::get('/footer', [FooterController::class, 'show']);
 Route::put('/footer', [FooterController::class, 'update'])
-    ->middleware(['auth:sanctum', 'can-write:content']);
+    ->middleware(['auth:sanctum', 'can-write:site']);
 Route::get('/social', [SocialController::class, 'index']);
 Route::put('/social', [SocialController::class, 'update'])
     ->middleware(['auth:sanctum', 'can-write:site']);

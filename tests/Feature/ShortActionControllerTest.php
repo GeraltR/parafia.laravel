@@ -112,10 +112,20 @@ class ShortActionControllerTest extends TestCase
         $response->assertStatus(403);
     }
 
-    public function test_update_allowed_for_editor(): void
+    public function test_update_forbidden_for_editor(): void
     {
         $items = $this->seedSixItems();
         $this->actingAsLevel(PermissionLevel::Editor);
+
+        $response = $this->putJson('/api/short-actions', $this->payloadFor($items));
+
+        $response->assertStatus(403);
+    }
+
+    public function test_update_allowed_for_administrator(): void
+    {
+        $items = $this->seedSixItems();
+        $this->actingAsLevel(PermissionLevel::Administrator);
 
         $response = $this->putJson('/api/short-actions', $this->payloadFor($items));
 
@@ -127,7 +137,7 @@ class ShortActionControllerTest extends TestCase
     public function test_update_requires_exactly_six_items(): void
     {
         $items = $this->seedSixItems();
-        $this->actingAsLevel(PermissionLevel::Editor);
+        $this->actingAsLevel(PermissionLevel::Administrator);
 
         $payload = $this->payloadFor($items);
         array_pop($payload['items']);
@@ -140,7 +150,7 @@ class ShortActionControllerTest extends TestCase
     public function test_update_rejects_unknown_item_id(): void
     {
         $items = $this->seedSixItems();
-        $this->actingAsLevel(PermissionLevel::Editor);
+        $this->actingAsLevel(PermissionLevel::Administrator);
 
         $payload = $this->payloadFor($items);
         $payload['items'][0]['id'] = 99999;
@@ -165,7 +175,7 @@ class ShortActionControllerTest extends TestCase
     public function test_upload_icon_stores_file_and_returns_url(): void
     {
         Storage::fake('public');
-        $this->actingAsLevel(PermissionLevel::Editor);
+        $this->actingAsLevel(PermissionLevel::Administrator);
 
         $response = $this->postJson('/api/short-actions/upload-icon', [
             'icon' => UploadedFile::fake()->image('icon.png'),

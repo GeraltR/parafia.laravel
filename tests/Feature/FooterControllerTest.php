@@ -80,9 +80,18 @@ class FooterControllerTest extends TestCase
         $response->assertStatus(403);
     }
 
-    public function test_update_allowed_for_editor_persists_fields_and_office_hours(): void
+    public function test_update_forbidden_for_editor(): void
     {
         $this->actingAsLevel(PermissionLevel::Editor);
+
+        $response = $this->putJson('/api/footer', $this->payload());
+
+        $response->assertStatus(403);
+    }
+
+    public function test_update_allowed_for_administrator_persists_fields_and_office_hours(): void
+    {
+        $this->actingAsLevel(PermissionLevel::Administrator);
 
         $response = $this->putJson('/api/footer', $this->payload());
 
@@ -106,7 +115,7 @@ class FooterControllerTest extends TestCase
         $footer = FooterConfig::create();
         $keep = $footer->officeHours()->create(['day' => 'Piątek', 'hours_on' => '10:00', 'hours_end' => '11:00']);
         $remove = $footer->officeHours()->create(['day' => 'Sobota', 'hours_on' => '10:00', 'hours_end' => '11:00']);
-        $this->actingAsLevel(PermissionLevel::Editor);
+        $this->actingAsLevel(PermissionLevel::Administrator);
 
         $payload = $this->payload();
         $payload['officeHours'] = [
@@ -122,7 +131,7 @@ class FooterControllerTest extends TestCase
 
     public function test_update_rejects_invalid_hours_format(): void
     {
-        $this->actingAsLevel(PermissionLevel::Editor);
+        $this->actingAsLevel(PermissionLevel::Administrator);
 
         $payload = $this->payload();
         $payload['officeHours'][0]['hoursOn'] = 'not-a-time';
