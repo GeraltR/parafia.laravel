@@ -34,18 +34,19 @@ class EventItemControllerTest extends TestCase
         ];
     }
 
-    public function test_index_only_returns_upcoming_events_limited_to_four(): void
+    public function test_index_returns_latest_four_ordered_by_date_desc_regardless_of_today(): void
     {
-        EventItem::create(['date' => now()->subDays(2), 'time' => '10:00', 'title' => 'Przeszłe', 'description' => 'x']);
+        EventItem::create(['date' => now()->addDays(2), 'time' => '10:00', 'title' => 'Przyszłe', 'description' => 'x']);
         for ($i = 0; $i < 6; $i++) {
-            EventItem::create(['date' => now()->addDays($i + 1), 'time' => '10:00', 'title' => "Wydarzenie {$i}", 'description' => 'x']);
+            EventItem::create(['date' => now()->subDays($i + 1), 'time' => '10:00', 'title' => "Wydarzenie {$i}", 'description' => 'x']);
         }
 
         $response = $this->getJson('/api/events');
 
         $response->assertOk();
         $response->assertJsonCount(4, 'data');
-        $response->assertJsonPath('data.0.title', 'Wydarzenie 0');
+        $response->assertJsonPath('data.0.title', 'Przyszłe');
+        $response->assertJsonPath('data.1.title', 'Wydarzenie 0');
     }
 
     public function test_manage_requires_authentication(): void

@@ -19,9 +19,8 @@ class EventItemController extends Controller
     {
         return EventItemResource::collection(
             EventItem::with('author')
-                ->whereDate('date', '>=', now()->toDateString())
-                ->orderBy('date')
-                ->orderBy('time')
+                ->orderByDesc('date')
+                ->orderByDesc('time')
                 ->limit(4)
                 ->get()
         );
