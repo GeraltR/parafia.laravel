@@ -11,6 +11,7 @@ use App\Models\MassIntention;
 use App\Models\MassIntentionsConfig;
 use App\Services\MassIntentionService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class MassIntentionController extends Controller
@@ -35,14 +36,22 @@ class MassIntentionController extends Controller
         ]);
     }
 
-    public function manage(): JsonResponse
+    public function manage(Request $request): JsonResponse
     {
-        $items = MassIntention::with('author')->orderBy('date')->orderBy('time')->get();
+        $paginator = MassIntention::with('author')
+            ->orderByDesc('date')
+            ->orderBy('time')
+            ->paginate(50, page: $request->integer('page', 1));
 
         return response()->json([
             'data' => [
                 'config' => MassIntentionsConfigResource::make($this->config()),
-                'items' => MassIntentionResource::collection($items),
+                'items' => MassIntentionResource::collection($paginator->items()),
+                'meta' => [
+                    'currentPage' => $paginator->currentPage(),
+                    'lastPage' => $paginator->lastPage(),
+                    'total' => $paginator->total(),
+                ],
             ],
         ]);
     }

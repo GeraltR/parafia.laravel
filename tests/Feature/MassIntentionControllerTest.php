@@ -64,6 +64,43 @@ class MassIntentionControllerTest extends TestCase
         $response->assertStatus(401);
     }
 
+    public function test_manage_orders_by_date_desc_then_time_asc(): void
+    {
+        MassIntention::create(['date' => '2026-08-26', 'time' => '18:00', 'intention' => 'Stare wieczorem']);
+        MassIntention::create(['date' => '2026-08-26', 'time' => '07:00', 'intention' => 'Stare rano']);
+        MassIntention::create(['date' => '2026-08-28', 'time' => '18:00', 'intention' => 'Nowe wieczorem']);
+        MassIntention::create(['date' => '2026-08-28', 'time' => '07:00', 'intention' => 'Nowe rano']);
+        $this->actingAsLevel(PermissionLevel::Viewer);
+
+        $response = $this->getJson('/api/mass-intentions/manage');
+
+        $response->assertOk();
+        $response->assertJsonPath('data.items.0.intention', 'Nowe rano');
+        $response->assertJsonPath('data.items.1.intention', 'Nowe wieczorem');
+        $response->assertJsonPath('data.items.2.intention', 'Stare rano');
+        $response->assertJsonPath('data.items.3.intention', 'Stare wieczorem');
+    }
+
+    public function test_manage_paginates_by_fifty(): void
+    {
+        for ($i = 0; $i < 60; $i++) {
+            MassIntention::create(['date' => now()->addDays($i), 'time' => '07:00', 'intention' => "Intencja {$i}"]);
+        }
+        $this->actingAsLevel(PermissionLevel::Viewer);
+
+        $response = $this->getJson('/api/mass-intentions/manage');
+
+        $response->assertOk();
+        $response->assertJsonCount(50, 'data.items');
+        $response->assertJsonPath('data.meta.currentPage', 1);
+        $response->assertJsonPath('data.meta.lastPage', 2);
+        $response->assertJsonPath('data.meta.total', 60);
+
+        $secondPage = $this->getJson('/api/mass-intentions/manage?page=2');
+        $secondPage->assertOk();
+        $secondPage->assertJsonCount(10, 'data.items');
+    }
+
     public function test_store_forbidden_for_viewer(): void
     {
         $this->actingAsLevel(PermissionLevel::Viewer);
