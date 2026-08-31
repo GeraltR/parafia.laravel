@@ -101,6 +101,58 @@ class MassIntentionControllerTest extends TestCase
         $secondPage->assertJsonCount(10, 'data.items');
     }
 
+    public function test_manage_search_matches_intention_text(): void
+    {
+        MassIntention::create(['date' => '2026-08-26', 'time' => '07:00', 'intention' => 'Za Roberta Szczerbinę']);
+        MassIntention::create(['date' => '2026-08-27', 'time' => '07:00', 'intention' => 'Za parafian']);
+        $this->actingAsLevel(PermissionLevel::Viewer);
+
+        $response = $this->getJson('/api/mass-intentions/manage?search=Szczerbin');
+
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data.items');
+        $response->assertJsonPath('data.items.0.intention', 'Za Roberta Szczerbinę');
+    }
+
+    public function test_manage_search_matches_day_description(): void
+    {
+        MassIntention::create(['date' => '2026-08-29', 'time' => '07:00', 'intention' => 'X', 'day_description' => 'Wspomnienie św. Jana Chrzciciela']);
+        MassIntention::create(['date' => '2026-08-30', 'time' => '07:00', 'intention' => 'Y']);
+        $this->actingAsLevel(PermissionLevel::Viewer);
+
+        $response = $this->getJson('/api/mass-intentions/manage?search=Chrzciciela');
+
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data.items');
+        $response->assertJsonPath('data.items.0.intention', 'X');
+    }
+
+    public function test_manage_search_matches_date_ignoring_leading_zeros(): void
+    {
+        MassIntention::create(['date' => '2026-09-05', 'time' => '07:00', 'intention' => 'Piąty wrzesień']);
+        MassIntention::create(['date' => '2026-09-15', 'time' => '07:00', 'intention' => 'Piętnasty wrzesień']);
+        $this->actingAsLevel(PermissionLevel::Viewer);
+
+        $response = $this->getJson('/api/mass-intentions/manage?search=' . urlencode('5.9'));
+
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data.items');
+        $response->assertJsonPath('data.items.0.intention', 'Piąty wrzesień');
+    }
+
+    public function test_manage_search_matches_padded_date(): void
+    {
+        MassIntention::create(['date' => '2026-09-05', 'time' => '07:00', 'intention' => 'Piąty wrzesień']);
+        MassIntention::create(['date' => '2026-09-15', 'time' => '07:00', 'intention' => 'Piętnasty wrzesień']);
+        $this->actingAsLevel(PermissionLevel::Viewer);
+
+        $response = $this->getJson('/api/mass-intentions/manage?search=' . urlencode('05.09'));
+
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data.items');
+        $response->assertJsonPath('data.items.0.intention', 'Piąty wrzesień');
+    }
+
     public function test_store_forbidden_for_viewer(): void
     {
         $this->actingAsLevel(PermissionLevel::Viewer);

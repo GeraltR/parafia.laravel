@@ -38,9 +38,8 @@ class MassIntentionController extends Controller
 
     public function manage(Request $request): JsonResponse
     {
-        $paginator = MassIntention::with('author')
-            ->orderByDesc('date')
-            ->orderBy('time')
+        $paginator = $this->massIntentionService
+            ->manageQuery($request->string('search')->toString())
             ->paginate(50, page: $request->integer('page', 1));
 
         return response()->json([
