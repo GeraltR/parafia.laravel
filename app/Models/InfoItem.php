@@ -17,6 +17,11 @@ class InfoItem extends Model
         'progress_value',
         'progress_description',
         'information',
+        'banner_text',
+        'banner_font',
+        'banner_text_color',
+        'banner_bg_color',
+        'banner_duration_seconds',
         'author_id',
     ];
 
@@ -26,6 +31,7 @@ class InfoItem extends Model
             'valid_from' => 'date',
             'valid_to' => 'date',
             'progress_value' => 'integer',
+            'banner_duration_seconds' => 'integer',
         ];
     }
 

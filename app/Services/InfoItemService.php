@@ -38,6 +38,11 @@ class InfoItemService
             'progress_value' => $data['progressValue'],
             'progress_description' => $data['progressDescription'],
             'information' => $data['information'] ?? null,
+            'banner_text' => $data['bannerText'] ?? null,
+            'banner_font' => $data['bannerFont'] ?? null,
+            'banner_text_color' => $data['bannerTextColor'] ?? null,
+            'banner_bg_color' => $data['bannerBgColor'] ?? null,
+            'banner_duration_seconds' => $data['bannerDurationSeconds'],
             'author_id' => $data['authorId'],
         ];
     }

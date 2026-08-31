@@ -20,6 +20,11 @@ class InfoItemResource extends JsonResource
             'progressValue' => $this->progress_value,
             'progressDescription' => $this->progress_description,
             'information' => $this->information,
+            'bannerText' => $this->banner_text,
+            'bannerFont' => $this->banner_font,
+            'bannerTextColor' => $this->banner_text_color,
+            'bannerBgColor' => $this->banner_bg_color,
+            'bannerDurationSeconds' => $this->banner_duration_seconds,
             'author' => $this->whenLoaded(
                 'author',
                 fn () => $this->author ? ['id' => $this->author->id, 'name' => $this->author->name] : null

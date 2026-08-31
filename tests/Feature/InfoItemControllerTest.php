@@ -36,6 +36,11 @@ class InfoItemControllerTest extends TestCase
             'progressValue' => 50,
             'progressDescription' => 'Postęp prac',
             'information' => '<p>Informacja</p>',
+            'bannerText' => 'Uwaga, ważny komunikat',
+            'bannerFont' => 'Inter',
+            'bannerTextColor' => '#ffffff',
+            'bannerBgColor' => '#0d1e35',
+            'bannerDurationSeconds' => 15,
             'authorId' => $author->id,
         ];
     }
@@ -123,7 +128,27 @@ class InfoItemControllerTest extends TestCase
         $response->assertCreated();
         $response->assertJsonPath('data.title', 'Nowa informacja');
         $response->assertJsonPath('data.progressValue', 50);
+        $response->assertJsonPath('data.bannerText', 'Uwaga, ważny komunikat');
+        $response->assertJsonPath('data.bannerDurationSeconds', 15);
         $this->assertNotNull($response->json('data.author'));
+    }
+
+    public function test_store_allows_empty_banner_with_zero_duration(): void
+    {
+        $this->actingAsLevel(PermissionLevel::Editor);
+
+        $payload = $this->payload();
+        $payload['bannerText'] = null;
+        $payload['bannerFont'] = null;
+        $payload['bannerTextColor'] = null;
+        $payload['bannerBgColor'] = null;
+        $payload['bannerDurationSeconds'] = 0;
+
+        $response = $this->postJson('/api/informacje', $payload);
+
+        $response->assertCreated();
+        $response->assertJsonPath('data.bannerText', null);
+        $response->assertJsonPath('data.bannerDurationSeconds', 0);
     }
 
     public function test_store_rejects_valid_to_before_valid_from(): void

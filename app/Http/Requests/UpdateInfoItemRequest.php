@@ -23,6 +23,11 @@ class UpdateInfoItemRequest extends FormRequest
             'progressValue' => ['required', 'integer', 'min:0', 'max:100'],
             'progressDescription' => ['required', 'string'],
             'information' => ['nullable', 'string'],
+            'bannerText' => ['nullable', 'string'],
+            'bannerFont' => ['nullable', 'string'],
+            'bannerTextColor' => ['nullable', 'string'],
+            'bannerBgColor' => ['nullable', 'string'],
+            'bannerDurationSeconds' => ['required', 'integer', 'min:0', 'max:300'],
             'authorId' => ['required', 'integer', 'exists:users,id'],
         ];
     }
