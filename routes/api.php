@@ -8,7 +8,7 @@ use App\Http\Controllers\EventItemController;
 use App\Http\Controllers\FontController;
 use App\Http\Controllers\FooterController;
 use App\Http\Controllers\HeroController;
-use App\Http\Controllers\InfoExtraController;
+use App\Http\Controllers\InfoItemController;
 use App\Http\Controllers\MassAndPastorController;
 use App\Http\Controllers\MassIntentionController;
 use App\Http\Controllers\NavbarController;
@@ -110,7 +110,19 @@ Route::put('/mass-intentions/{massIntention}', [MassIntentionController::class, 
 Route::delete('/mass-intentions/{massIntention}', [MassIntentionController::class, 'destroy'])
     ->middleware(['auth:sanctum', 'can-write:content']);
 
-Route::get('/info-extra', [InfoExtraController::class, 'show']);
+Route::get('/informacje', [InfoItemController::class, 'index']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/informacje/manage', [InfoItemController::class, 'manage']);
+});
+Route::post('/informacje', [InfoItemController::class, 'store'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+Route::post('/informacje/upload-image', [InfoItemController::class, 'uploadImage'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+Route::put('/informacje/{infoItem}', [InfoItemController::class, 'update'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+Route::delete('/informacje/{infoItem}', [InfoItemController::class, 'destroy'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+
 Route::get('/footer', [FooterController::class, 'show']);
 Route::put('/footer', [FooterController::class, 'update'])
     ->middleware(['auth:sanctum', 'can-write:site']);

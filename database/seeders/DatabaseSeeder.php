@@ -49,7 +49,7 @@ class DatabaseSeeder extends Seeder
             ShortActionItemSeeder::class,
             EventItemSeeder::class,
             NewsItemSeeder::class,
-            InfoExtraSeeder::class,
+            InfoItemSeeder::class,
             ContentTopicSeeder::class,
             MassAndPastorSeeder::class,
             AssociationSeeder::class,
