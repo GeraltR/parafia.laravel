@@ -38,6 +38,33 @@ class UserControllerTest extends TestCase
         $response->assertJsonPath('data.3.name', $viewer->name);
     }
 
+    public function test_index_hides_other_users_email_from_viewer(): void
+    {
+        $viewer = User::factory()->create(['permission_level' => PermissionLevel::Viewer, 'email' => 'ja@example.com']);
+        User::factory()->create(['email' => 'ukryty@example.com']);
+        $this->actingAs($viewer, 'sanctum');
+
+        $response = $this->getJson('/api/users');
+
+        $response->assertOk();
+        $byEmail = collect($response->json('data'))->keyBy('id');
+        $this->assertNull($byEmail[User::where('email', 'ukryty@example.com')->first()->id]['email']);
+        $this->assertEquals('ja@example.com', $byEmail[$viewer->id]['email']);
+    }
+
+    public function test_index_shows_email_for_editor_and_above(): void
+    {
+        $editor = User::factory()->create(['permission_level' => PermissionLevel::Editor]);
+        User::factory()->create(['email' => 'widoczny@example.com']);
+        $this->actingAs($editor, 'sanctum');
+
+        $response = $this->getJson('/api/users');
+
+        $response->assertOk();
+        $emails = collect($response->json('data'))->pluck('email');
+        $this->assertTrue($emails->contains('widoczny@example.com'));
+    }
+
     public function test_user_can_change_own_password(): void
     {
         $user = User::factory()->create(['permission_level' => PermissionLevel::Viewer]);
@@ -104,6 +131,86 @@ class UserControllerTest extends TestCase
         ]);
 
         $response->assertStatus(422);
+    }
+
+    public function test_only_supervisor_can_update_user(): void
+    {
+        $admin = User::factory()->create(['permission_level' => PermissionLevel::Administrator]);
+        $other = User::factory()->create(['name' => 'Stary', 'email' => 'stary@example.com']);
+        $this->actingAs($admin, 'sanctum');
+
+        $response = $this->putJson("/api/users/{$other->id}", [
+            'name' => 'Nowy',
+            'email' => 'nowy@example.com',
+            'permissionLevel' => PermissionLevel::Editor->value,
+        ]);
+
+        $response->assertStatus(403);
+    }
+
+    public function test_supervisor_can_update_user(): void
+    {
+        $supervisor = User::factory()->create(['permission_level' => PermissionLevel::Supervisor]);
+        $other = User::factory()->create(['name' => 'Stary', 'email' => 'stary@example.com', 'permission_level' => PermissionLevel::Viewer]);
+        $this->actingAs($supervisor, 'sanctum');
+
+        $response = $this->putJson("/api/users/{$other->id}", [
+            'name' => 'Nowy',
+            'email' => 'nowy@example.com',
+            'permissionLevel' => PermissionLevel::Editor->value,
+        ]);
+
+        $response->assertOk();
+        $response->assertJsonPath('data.name', 'Nowy');
+        $response->assertJsonPath('data.email', 'nowy@example.com');
+        $response->assertJsonPath('data.permissionLevel', PermissionLevel::Editor->value);
+        $this->assertDatabaseHas('users', ['id' => $other->id, 'name' => 'Nowy', 'email' => 'nowy@example.com']);
+    }
+
+    public function test_update_user_rejects_duplicate_email(): void
+    {
+        $supervisor = User::factory()->create(['permission_level' => PermissionLevel::Supervisor]);
+        $other = User::factory()->create();
+        $taken = User::factory()->create(['email' => 'zajety@example.com']);
+        $this->actingAs($supervisor, 'sanctum');
+
+        $response = $this->putJson("/api/users/{$other->id}", [
+            'name' => 'Nowy',
+            'email' => 'zajety@example.com',
+            'permissionLevel' => PermissionLevel::Editor->value,
+        ]);
+
+        $response->assertStatus(422);
+    }
+
+    public function test_update_user_allows_keeping_own_email(): void
+    {
+        $supervisor = User::factory()->create(['permission_level' => PermissionLevel::Supervisor, 'email' => 'super@example.com']);
+        $this->actingAs($supervisor, 'sanctum');
+
+        $response = $this->putJson("/api/users/{$supervisor->id}", [
+            'name' => 'Zaktualizowany',
+            'email' => 'super@example.com',
+            'permissionLevel' => PermissionLevel::Supervisor->value,
+        ]);
+
+        $response->assertOk();
+        $response->assertJsonPath('data.name', 'Zaktualizowany');
+    }
+
+    public function test_supervisor_cannot_demote_own_account(): void
+    {
+        $supervisor = User::factory()->create(['permission_level' => PermissionLevel::Supervisor, 'email' => 'super@example.com']);
+        $this->actingAs($supervisor, 'sanctum');
+
+        $response = $this->putJson("/api/users/{$supervisor->id}", [
+            'name' => 'Super',
+            'email' => 'super@example.com',
+            'permissionLevel' => PermissionLevel::Administrator->value,
+        ]);
+
+        $response->assertStatus(422);
+        $this->assertDatabaseHas('users', ['id' => $supervisor->id, 'permission_level' => PermissionLevel::Supervisor]);
     }
 
     public function test_only_supervisor_can_create_user(): void

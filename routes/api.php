@@ -38,6 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users', [UserController::class, 'index']);
     Route::put('/users/{user}/password', [UserController::class, 'updatePassword']);
     Route::post('/users', [UserController::class, 'store'])->middleware('can-write:management');
+    Route::put('/users/{user}', [UserController::class, 'update'])->middleware('can-write:management');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->middleware('can-write:management');
 });
 
