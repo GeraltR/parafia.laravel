@@ -55,6 +55,21 @@ class MassIntentionController extends Controller
         ]);
     }
 
+    public function printList(Request $request): JsonResponse
+    {
+        $from = $request->string('from')->toString();
+
+        $items = MassIntention::query()
+            ->when($from !== '', fn ($query) => $query->where('date', '>=', $from))
+            ->orderBy('date')
+            ->orderBy('time')
+            ->get();
+
+        return response()->json([
+            'data' => MassIntentionResource::collection($items),
+        ]);
+    }
+
     public function store(StoreMassIntentionRequest $request): JsonResponse
     {
         $intention = $this->massIntentionService->create($request->validated());

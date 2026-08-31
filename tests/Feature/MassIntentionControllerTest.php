@@ -153,6 +153,42 @@ class MassIntentionControllerTest extends TestCase
         $response->assertJsonPath('data.items.0.intention', 'Piąty wrzesień');
     }
 
+    public function test_print_list_requires_authentication(): void
+    {
+        $response = $this->getJson('/api/mass-intentions/print');
+
+        $response->assertStatus(401);
+    }
+
+    public function test_print_list_returns_from_date_onward_ordered_ascending(): void
+    {
+        MassIntention::create(['date' => '2026-09-04', 'time' => '07:00', 'intention' => 'Przed zakresem']);
+        MassIntention::create(['date' => '2026-09-06', 'time' => '18:00', 'intention' => 'Szósty wieczorem']);
+        MassIntention::create(['date' => '2026-09-06', 'time' => '07:00', 'intention' => 'Szósty rano']);
+        MassIntention::create(['date' => '2026-09-20', 'time' => '07:00', 'intention' => 'Najmłodszy']);
+        $this->actingAsLevel(PermissionLevel::Viewer);
+
+        $response = $this->getJson('/api/mass-intentions/print?from=2026-09-06');
+
+        $response->assertOk();
+        $response->assertJsonCount(3, 'data');
+        $response->assertJsonPath('data.0.intention', 'Szósty rano');
+        $response->assertJsonPath('data.1.intention', 'Szósty wieczorem');
+        $response->assertJsonPath('data.2.intention', 'Najmłodszy');
+    }
+
+    public function test_print_list_without_from_returns_everything(): void
+    {
+        MassIntention::create(['date' => '2026-09-04', 'time' => '07:00', 'intention' => 'A']);
+        MassIntention::create(['date' => '2026-09-06', 'time' => '07:00', 'intention' => 'B']);
+        $this->actingAsLevel(PermissionLevel::Viewer);
+
+        $response = $this->getJson('/api/mass-intentions/print');
+
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
+    }
+
     public function test_store_forbidden_for_viewer(): void
     {
         $this->actingAsLevel(PermissionLevel::Viewer);

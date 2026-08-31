@@ -99,6 +99,7 @@ Route::delete('/news/{newsItem}', [NewsItemController::class, 'destroy'])
 Route::get('/mass-intentions', [MassIntentionController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/mass-intentions/manage', [MassIntentionController::class, 'manage']);
+    Route::get('/mass-intentions/print', [MassIntentionController::class, 'printList']);
 });
 Route::post('/mass-intentions', [MassIntentionController::class, 'store'])
     ->middleware(['auth:sanctum', 'can-write:content']);
