@@ -50,6 +50,9 @@ class ContactAddressController extends Controller
             'city' => $contact->city,
             'postCode' => $contact->post_code,
             'phone' => $contact->phone,
+            'nip' => $contact->nip,
+            'bankAccountNumber' => $contact->bank_account_number,
+            'bankName' => $contact->bank_name,
             'social' => $visibility,
         ];
     }

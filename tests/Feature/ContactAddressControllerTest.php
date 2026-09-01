@@ -29,6 +29,9 @@ class ContactAddressControllerTest extends TestCase
             'city' => 'Nowowo',
             'postCode' => '11-111',
             'phone' => '+48 999 888 777',
+            'nip' => '1234563218',
+            'bankAccountNumber' => '12 3456 7890 1234 5678 9012 3456',
+            'bankName' => 'Bank Testowy S.A.',
             'social' => [
                 'facebook' => true,
                 'youtube' => false,
@@ -101,6 +104,9 @@ class ContactAddressControllerTest extends TestCase
         $response->assertJsonPath('data.city', 'Nowowo');
         $response->assertJsonPath('data.postCode', '11-111');
         $response->assertJsonPath('data.phone', '+48 999 888 777');
+        $response->assertJsonPath('data.nip', '1234563218');
+        $response->assertJsonPath('data.bankAccountNumber', '12 3456 7890 1234 5678 9012 3456');
+        $response->assertJsonPath('data.bankName', 'Bank Testowy S.A.');
         $response->assertJsonPath('data.social.facebook', true);
         $response->assertJsonPath('data.social.instagram', true);
         $response->assertJsonPath('data.social.youtube', false);

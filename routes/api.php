@@ -3,6 +3,7 @@
 use App\Http\Controllers\AssociationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactAddressController;
+use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\ContentTopicController;
 use App\Http\Controllers\EventItemController;
 use App\Http\Controllers\FontController;
@@ -133,6 +134,8 @@ Route::get('/fonts', [FontController::class, 'index']);
 Route::get('/contact-addresses', [ContactAddressController::class, 'show']);
 Route::put('/contact-addresses', [ContactAddressController::class, 'update'])
     ->middleware(['auth:sanctum', 'can-write:site']);
+Route::post('/contact-message', [ContactMessageController::class, 'store'])
+    ->middleware('throttle:5,1');
 
 Route::get('/content-topics', [ContentTopicController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {

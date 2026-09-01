@@ -24,6 +24,9 @@ class ContactAddressService
             'city' => $data['city'],
             'post_code' => $data['postCode'],
             'phone' => $data['phone'],
+            'nip' => $data['nip'] ?? null,
+            'bank_account_number' => $data['bankAccountNumber'] ?? null,
+            'bank_name' => $data['bankName'] ?? null,
         ]);
 
         foreach (Social::NETWORKS as $network) {

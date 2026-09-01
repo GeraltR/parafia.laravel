@@ -13,6 +13,9 @@ class ContactAddress extends Model
         'city',
         'post_code',
         'phone',
+        'nip',
+        'bank_account_number',
+        'bank_name',
         'social',
     ];
 
