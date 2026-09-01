@@ -20,6 +20,12 @@ class ContactMessageService
         $siteKey = config('services.recaptcha.site_key');
 
         if (! $projectId || ! $apiKey || ! $siteKey) {
+            Log::warning('reCAPTCHA config missing', [
+                'has_project_id' => (bool) $projectId,
+                'has_api_key' => (bool) $apiKey,
+                'has_site_key' => (bool) $siteKey,
+            ]);
+
             return false;
         }
 
