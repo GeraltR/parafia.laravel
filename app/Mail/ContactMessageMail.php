@@ -16,7 +16,7 @@ class ContactMessageMail extends Mailable
         public readonly string $name,
         public readonly string $email,
         public readonly string $messageSubject,
-        public readonly string $message,
+        public readonly string $messageBody,
     ) {}
 
     public function envelope(): Envelope

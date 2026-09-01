@@ -45,7 +45,10 @@ class ContactMessageControllerTest extends TestCase
     public function test_store_sends_mail_when_recaptcha_passes(): void
     {
         Http::fake([
-            'https://www.google.com/recaptcha/api/siteverify' => Http::response(['success' => true, 'score' => 0.9]),
+            'recaptchaenterprise.googleapis.com/*' => Http::response([
+                'tokenProperties' => ['valid' => true, 'action' => 'contact_form'],
+                'riskAnalysis' => ['score' => 0.9],
+            ]),
         ]);
         Mail::fake();
 
@@ -56,14 +59,16 @@ class ContactMessageControllerTest extends TestCase
             return $mail->name === 'Jan Kowalski'
                 && $mail->email === 'jan@example.com'
                 && $mail->messageSubject === 'Pytanie o intencję'
-                && $mail->message === 'Treść wiadomości testowej.';
+                && $mail->messageBody === 'Treść wiadomości testowej.';
         });
     }
 
     public function test_store_rejects_when_recaptcha_fails(): void
     {
         Http::fake([
-            'https://www.google.com/recaptcha/api/siteverify' => Http::response(['success' => false]),
+            'recaptchaenterprise.googleapis.com/*' => Http::response([
+                'tokenProperties' => ['valid' => false],
+            ]),
         ]);
         Mail::fake();
 
@@ -76,7 +81,10 @@ class ContactMessageControllerTest extends TestCase
     public function test_store_rejects_when_score_is_too_low(): void
     {
         Http::fake([
-            'https://www.google.com/recaptcha/api/siteverify' => Http::response(['success' => true, 'score' => 0.1]),
+            'recaptchaenterprise.googleapis.com/*' => Http::response([
+                'tokenProperties' => ['valid' => true, 'action' => 'contact_form'],
+                'riskAnalysis' => ['score' => 0.1],
+            ]),
         ]);
         Mail::fake();
 

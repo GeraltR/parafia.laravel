@@ -23,6 +23,6 @@
     </table>
 
     <p style="font-weight: bold; margin-top: 20px; margin-bottom: 4px;">Wiadomość:</p>
-    <p style="white-space: pre-line;">{{ $message }}</p>
+    <p style="white-space: pre-line;">{{ $messageBody }}</p>
 </body>
 </html>

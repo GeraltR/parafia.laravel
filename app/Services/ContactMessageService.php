@@ -11,28 +11,44 @@ class ContactMessageService
 {
     private const RECAPTCHA_MIN_SCORE = 0.5;
 
+    private const RECAPTCHA_EXPECTED_ACTION = 'contact_form';
+
     public function verifyRecaptcha(string $token): bool
     {
-        $secret = config('services.recaptcha.secret_key');
+        $projectId = config('services.recaptcha.project_id');
+        $apiKey = config('services.recaptcha.api_key');
+        $siteKey = config('services.recaptcha.site_key');
 
-        if (! $secret) {
+        if (! $projectId || ! $apiKey || ! $siteKey) {
             return false;
         }
 
-        $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
-            'secret' => $secret,
-            'response' => $token,
-        ]);
+        $response = Http::post(
+            "https://recaptchaenterprise.googleapis.com/v1/projects/{$projectId}/assessments?key={$apiKey}",
+            [
+                'event' => [
+                    'token' => $token,
+                    'siteKey' => $siteKey,
+                    'expectedAction' => self::RECAPTCHA_EXPECTED_ACTION,
+                ],
+            ]
+        );
 
         if (! $response->successful()) {
-            Log::warning('reCAPTCHA siteverify request failed', ['status' => $response->status()]);
+            Log::warning('reCAPTCHA assessment request failed', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
 
             return false;
         }
 
         $data = $response->json();
-        $passed = ($data['success'] ?? false) === true
-            && ($data['score'] ?? 0) >= self::RECAPTCHA_MIN_SCORE;
+        $valid = (bool) ($data['tokenProperties']['valid'] ?? false);
+        $actionMatches = ($data['tokenProperties']['action'] ?? null) === self::RECAPTCHA_EXPECTED_ACTION;
+        $score = $data['riskAnalysis']['score'] ?? 0;
+
+        $passed = $valid && $actionMatches && $score >= self::RECAPTCHA_MIN_SCORE;
 
         if (! $passed) {
             Log::warning('reCAPTCHA verification did not pass', ['response' => $data]);
@@ -47,7 +63,7 @@ class ContactMessageService
             name: $data['name'],
             email: $data['email'],
             messageSubject: $data['subject'],
-            message: $data['message'],
+            messageBody: $data['message'],
         ));
     }
 }
