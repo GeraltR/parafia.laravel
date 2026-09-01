@@ -2,21 +2,24 @@
 
 namespace Database\Seeders;
 
-use App\Models\ContentTopic;
+use App\Models\SakramentyTopic;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
-class ContentTopicSeeder extends Seeder
+class SakramentyTopicSeeder extends Seeder
 {
     public function run(): void
     {
+        if (SakramentyTopic::query()->exists()) {
+            return;
+        }
+
         $author = User::where('email', 'test@example.com')->first() ?? User::first();
 
         $sakramenty = ['Chrzest', 'Bierzmowanie', 'Małżeństwo'];
 
         foreach ($sakramenty as $order => $title) {
-            ContentTopic::create([
-                'page' => 'sakramenty',
+            SakramentyTopic::create([
                 'title' => $title,
                 'content' => '',
                 'author_id' => $author?->id,

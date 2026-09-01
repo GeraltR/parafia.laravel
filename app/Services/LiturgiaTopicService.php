@@ -2,28 +2,16 @@
 
 namespace App\Services;
 
-use App\Enums\ContentPageSlug;
-use App\Models\ContentTopic;
+use App\Models\LiturgiaTopic;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Validation\ValidationException;
 
-class ContentTopicService
+class LiturgiaTopicService
 {
-    public function create(array $data): ContentTopic
+    public function create(array $data): LiturgiaTopic
     {
-        $page = ContentPageSlug::from($data['page']);
+        $existingCount = LiturgiaTopic::count();
 
-        $existingCount = ContentTopic::where('page', $page->value)->count();
-        $maxTopics = $page->maxTopics();
-
-        if ($maxTopics !== null && $existingCount >= $maxTopics) {
-            throw ValidationException::withMessages([
-                'page' => "Osiągnięto maksymalną liczbę tematów ({$maxTopics}) dla tej sekcji.",
-            ]);
-        }
-
-        return ContentTopic::create([
-            'page' => $page->value,
+        return LiturgiaTopic::create([
             'icon_url' => $data['iconUrl'] ?? null,
             'title' => $data['title'],
             'content' => $data['content'] ?? '',
@@ -33,7 +21,7 @@ class ContentTopicService
         ]);
     }
 
-    public function update(ContentTopic $topic, array $data): ContentTopic
+    public function update(LiturgiaTopic $topic, array $data): LiturgiaTopic
     {
         $topic->update([
             'icon_url' => $data['iconUrl'] ?? null,
@@ -48,7 +36,7 @@ class ContentTopicService
 
     public function storeImage(UploadedFile $file, string $baseUrl): string
     {
-        $path = $file->store('content', 'public');
+        $path = $file->store('content/liturgia', 'public');
 
         return rtrim($baseUrl, '/').'/storage/'.$path;
     }

@@ -4,17 +4,20 @@ use App\Http\Controllers\AssociationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactAddressController;
 use App\Http\Controllers\ContactMessageController;
-use App\Http\Controllers\ContentTopicController;
+use App\Http\Controllers\ContentImageController;
 use App\Http\Controllers\EventItemController;
 use App\Http\Controllers\FontController;
 use App\Http\Controllers\FooterController;
 use App\Http\Controllers\HeroController;
 use App\Http\Controllers\InfoItemController;
+use App\Http\Controllers\LiturgiaTopicController;
 use App\Http\Controllers\MassAndPastorController;
 use App\Http\Controllers\MassIntentionController;
 use App\Http\Controllers\NavbarController;
 use App\Http\Controllers\NewsItemController;
+use App\Http\Controllers\ParafiaTopicController;
 use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\SakramentyTopicController;
 use App\Http\Controllers\ShortActionController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\ThemeController;
@@ -137,15 +140,44 @@ Route::put('/contact-addresses', [ContactAddressController::class, 'update'])
 Route::post('/contact-message', [ContactMessageController::class, 'store'])
     ->middleware('throttle:5,1');
 
-Route::get('/content-topics', [ContentTopicController::class, 'index']);
+Route::post('/content-images', [ContentImageController::class, 'upload'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+
+Route::get('/sakramenty-topics', [SakramentyTopicController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/content-topics/manage', [ContentTopicController::class, 'manage']);
+    Route::get('/sakramenty-topics/manage', [SakramentyTopicController::class, 'manage']);
 });
-Route::post('/content-topics', [ContentTopicController::class, 'store'])
+Route::post('/sakramenty-topics', [SakramentyTopicController::class, 'store'])
     ->middleware(['auth:sanctum', 'can-write:content']);
-Route::post('/content-topics/upload-image', [ContentTopicController::class, 'uploadImage'])
+Route::post('/sakramenty-topics/upload-image', [SakramentyTopicController::class, 'uploadImage'])
     ->middleware(['auth:sanctum', 'can-write:content']);
-Route::put('/content-topics/{contentTopic}', [ContentTopicController::class, 'update'])
+Route::put('/sakramenty-topics/{sakramentyTopic}', [SakramentyTopicController::class, 'update'])
     ->middleware(['auth:sanctum', 'can-write:content']);
-Route::delete('/content-topics/{contentTopic}', [ContentTopicController::class, 'destroy'])
+Route::delete('/sakramenty-topics/{sakramentyTopic}', [SakramentyTopicController::class, 'destroy'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+
+Route::get('/parafia-topics', [ParafiaTopicController::class, 'index']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/parafia-topics/manage', [ParafiaTopicController::class, 'manage']);
+});
+Route::post('/parafia-topics', [ParafiaTopicController::class, 'store'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+Route::post('/parafia-topics/upload-image', [ParafiaTopicController::class, 'uploadImage'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+Route::put('/parafia-topics/{parafiaTopic}', [ParafiaTopicController::class, 'update'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+Route::delete('/parafia-topics/{parafiaTopic}', [ParafiaTopicController::class, 'destroy'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+
+Route::get('/liturgia-topics', [LiturgiaTopicController::class, 'index']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/liturgia-topics/manage', [LiturgiaTopicController::class, 'manage']);
+});
+Route::post('/liturgia-topics', [LiturgiaTopicController::class, 'store'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+Route::post('/liturgia-topics/upload-image', [LiturgiaTopicController::class, 'uploadImage'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+Route::put('/liturgia-topics/{liturgiaTopic}', [LiturgiaTopicController::class, 'update'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+Route::delete('/liturgia-topics/{liturgiaTopic}', [LiturgiaTopicController::class, 'destroy'])
     ->middleware(['auth:sanctum', 'can-write:content']);

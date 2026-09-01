@@ -50,7 +50,7 @@ class DatabaseSeeder extends Seeder
             EventItemSeeder::class,
             NewsItemSeeder::class,
             InfoItemSeeder::class,
-            ContentTopicSeeder::class,
+            SakramentyTopicSeeder::class,
             MassAndPastorSeeder::class,
             AssociationSeeder::class,
         ]);

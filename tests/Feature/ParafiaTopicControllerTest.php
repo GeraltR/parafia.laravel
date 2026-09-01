@@ -3,14 +3,14 @@
 namespace Tests\Feature;
 
 use App\Enums\PermissionLevel;
-use App\Models\ContentTopic;
+use App\Models\ParafiaTopic;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
-class ContentTopicControllerTest extends TestCase
+class ParafiaTopicControllerTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -25,7 +25,6 @@ class ContentTopicControllerTest extends TestCase
     private function validPayload(User $author, array $overrides = []): array
     {
         return array_merge([
-            'page' => 'parafia',
             'iconUrl' => null,
             'title' => 'Historia parafii',
             'content' => '<p>Treść</p>',
@@ -34,28 +33,17 @@ class ContentTopicControllerTest extends TestCase
         ], $overrides);
     }
 
-    public function test_index_requires_valid_page(): void
-    {
-        $response = $this->getJson('/api/content-topics?page=nieznana');
-
-        $response->assertStatus(422);
-    }
-
     public function test_index_returns_only_visible_topics_ordered(): void
     {
         $author = User::factory()->create();
-        ContentTopic::create([
-            'page' => 'parafia', 'title' => 'B', 'author_id' => $author->id, 'order' => 1,
-        ]);
-        ContentTopic::create([
-            'page' => 'parafia', 'title' => 'A', 'author_id' => $author->id, 'order' => 0,
-        ]);
-        ContentTopic::create([
-            'page' => 'parafia', 'title' => 'Przyszła', 'author_id' => $author->id, 'order' => 2,
+        ParafiaTopic::create(['title' => 'B', 'author_id' => $author->id, 'order' => 1]);
+        ParafiaTopic::create(['title' => 'A', 'author_id' => $author->id, 'order' => 0]);
+        ParafiaTopic::create([
+            'title' => 'Przyszła', 'author_id' => $author->id, 'order' => 2,
             'visible_from' => now()->addDay(),
         ]);
 
-        $response = $this->getJson('/api/content-topics?page=parafia');
+        $response = $this->getJson('/api/parafia-topics');
 
         $response->assertOk();
         $response->assertJsonCount(2, 'data');
@@ -65,7 +53,7 @@ class ContentTopicControllerTest extends TestCase
 
     public function test_manage_requires_authentication(): void
     {
-        $response = $this->getJson('/api/content-topics/manage?page=parafia');
+        $response = $this->getJson('/api/parafia-topics/manage');
 
         $response->assertStatus(401);
     }
@@ -73,12 +61,12 @@ class ContentTopicControllerTest extends TestCase
     public function test_manage_returns_all_topics_including_future(): void
     {
         $author = $this->actingAsLevel(PermissionLevel::Viewer);
-        ContentTopic::create([
-            'page' => 'parafia', 'title' => 'Przyszła', 'author_id' => $author->id, 'order' => 0,
+        ParafiaTopic::create([
+            'title' => 'Przyszła', 'author_id' => $author->id, 'order' => 0,
             'visible_from' => now()->addDay(),
         ]);
 
-        $response = $this->getJson('/api/content-topics/manage?page=parafia');
+        $response = $this->getJson('/api/parafia-topics/manage');
 
         $response->assertOk();
         $response->assertJsonCount(1, 'data');
@@ -88,7 +76,7 @@ class ContentTopicControllerTest extends TestCase
     {
         $author = User::factory()->create();
 
-        $response = $this->postJson('/api/content-topics', $this->validPayload($author));
+        $response = $this->postJson('/api/parafia-topics', $this->validPayload($author));
 
         $response->assertStatus(401);
     }
@@ -97,7 +85,7 @@ class ContentTopicControllerTest extends TestCase
     {
         $author = $this->actingAsLevel(PermissionLevel::Viewer);
 
-        $response = $this->postJson('/api/content-topics', $this->validPayload($author));
+        $response = $this->postJson('/api/parafia-topics', $this->validPayload($author));
 
         $response->assertStatus(403);
     }
@@ -107,7 +95,7 @@ class ContentTopicControllerTest extends TestCase
         foreach ([PermissionLevel::Editor, PermissionLevel::Administrator, PermissionLevel::Supervisor] as $level) {
             $author = $this->actingAsLevel($level);
 
-            $response = $this->postJson('/api/content-topics', $this->validPayload($author, ['title' => "Temat {$level->value}"]));
+            $response = $this->postJson('/api/parafia-topics', $this->validPayload($author, ['title' => "Temat {$level->value}"]));
 
             $response->assertStatus(201);
         }
@@ -117,40 +105,20 @@ class ContentTopicControllerTest extends TestCase
     {
         $this->actingAsLevel(PermissionLevel::Editor);
 
-        $response = $this->postJson('/api/content-topics', ['page' => 'parafia']);
+        $response = $this->postJson('/api/parafia-topics', []);
 
         $response->assertStatus(422);
     }
 
-    public function test_store_enforces_max_topics_for_sakramenty(): void
+    public function test_store_does_not_limit_number_of_topics(): void
     {
         $author = $this->actingAsLevel(PermissionLevel::Editor);
 
-        foreach (range(1, 7) as $i) {
-            ContentTopic::create([
-                'page' => 'sakramenty', 'title' => "Temat {$i}", 'author_id' => $author->id, 'order' => $i,
-            ]);
+        foreach (range(1, 8) as $i) {
+            ParafiaTopic::create(['title' => "Temat {$i}", 'author_id' => $author->id, 'order' => $i]);
         }
 
-        $response = $this->postJson('/api/content-topics', $this->validPayload($author, [
-            'page' => 'sakramenty',
-            'title' => 'Ósmy temat',
-        ]));
-
-        $response->assertStatus(422);
-    }
-
-    public function test_store_does_not_limit_parafia_or_liturgia(): void
-    {
-        $author = $this->actingAsLevel(PermissionLevel::Editor);
-
-        foreach (range(1, 5) as $i) {
-            ContentTopic::create([
-                'page' => 'parafia', 'title' => "Temat {$i}", 'author_id' => $author->id, 'order' => $i,
-            ]);
-        }
-
-        $response = $this->postJson('/api/content-topics', $this->validPayload($author, ['title' => 'Szósty temat']));
+        $response = $this->postJson('/api/parafia-topics', $this->validPayload($author, ['title' => 'Dziewiąty temat']));
 
         $response->assertStatus(201);
     }
@@ -158,9 +126,9 @@ class ContentTopicControllerTest extends TestCase
     public function test_store_sets_incremental_order(): void
     {
         $author = $this->actingAsLevel(PermissionLevel::Editor);
-        ContentTopic::create(['page' => 'parafia', 'title' => 'Pierwszy', 'author_id' => $author->id, 'order' => 0]);
+        ParafiaTopic::create(['title' => 'Pierwszy', 'author_id' => $author->id, 'order' => 0]);
 
-        $response = $this->postJson('/api/content-topics', $this->validPayload($author, ['title' => 'Drugi']));
+        $response = $this->postJson('/api/parafia-topics', $this->validPayload($author, ['title' => 'Drugi']));
 
         $response->assertStatus(201);
         $response->assertJsonPath('data.order', 1);
@@ -169,22 +137,22 @@ class ContentTopicControllerTest extends TestCase
     public function test_update_modifies_topic(): void
     {
         $author = $this->actingAsLevel(PermissionLevel::Administrator);
-        $topic = ContentTopic::create(['page' => 'liturgia', 'title' => 'Stary', 'author_id' => $author->id, 'order' => 0]);
+        $topic = ParafiaTopic::create(['title' => 'Stary', 'author_id' => $author->id, 'order' => 0]);
 
-        $response = $this->putJson("/api/content-topics/{$topic->id}", $this->validPayload($author, ['title' => 'Nowy']));
+        $response = $this->putJson("/api/parafia-topics/{$topic->id}", $this->validPayload($author, ['title' => 'Nowy']));
 
         $response->assertOk();
         $response->assertJsonPath('data.title', 'Nowy');
-        $this->assertDatabaseHas('content_topics', ['id' => $topic->id, 'title' => 'Nowy']);
+        $this->assertDatabaseHas('parafia_topics', ['id' => $topic->id, 'title' => 'Nowy']);
     }
 
     public function test_update_forbidden_for_viewer(): void
     {
         $author = User::factory()->create();
-        $topic = ContentTopic::create(['page' => 'liturgia', 'title' => 'Stary', 'author_id' => $author->id, 'order' => 0]);
+        $topic = ParafiaTopic::create(['title' => 'Stary', 'author_id' => $author->id, 'order' => 0]);
         $this->actingAsLevel(PermissionLevel::Viewer);
 
-        $response = $this->putJson("/api/content-topics/{$topic->id}", $this->validPayload($author));
+        $response = $this->putJson("/api/parafia-topics/{$topic->id}", $this->validPayload($author));
 
         $response->assertStatus(403);
     }
@@ -192,21 +160,21 @@ class ContentTopicControllerTest extends TestCase
     public function test_destroy_removes_topic(): void
     {
         $author = $this->actingAsLevel(PermissionLevel::Editor);
-        $topic = ContentTopic::create(['page' => 'liturgia', 'title' => 'Do usunięcia', 'author_id' => $author->id, 'order' => 0]);
+        $topic = ParafiaTopic::create(['title' => 'Do usunięcia', 'author_id' => $author->id, 'order' => 0]);
 
-        $response = $this->deleteJson("/api/content-topics/{$topic->id}");
+        $response = $this->deleteJson("/api/parafia-topics/{$topic->id}");
 
         $response->assertStatus(204);
-        $this->assertDatabaseMissing('content_topics', ['id' => $topic->id]);
+        $this->assertDatabaseMissing('parafia_topics', ['id' => $topic->id]);
     }
 
     public function test_destroy_forbidden_for_viewer(): void
     {
         $author = User::factory()->create();
-        $topic = ContentTopic::create(['page' => 'liturgia', 'title' => 'X', 'author_id' => $author->id, 'order' => 0]);
+        $topic = ParafiaTopic::create(['title' => 'X', 'author_id' => $author->id, 'order' => 0]);
         $this->actingAsLevel(PermissionLevel::Viewer);
 
-        $response = $this->deleteJson("/api/content-topics/{$topic->id}");
+        $response = $this->deleteJson("/api/parafia-topics/{$topic->id}");
 
         $response->assertStatus(403);
     }
@@ -216,7 +184,7 @@ class ContentTopicControllerTest extends TestCase
         Storage::fake('public');
         $this->actingAsLevel(PermissionLevel::Viewer);
 
-        $response = $this->postJson('/api/content-topics/upload-image', [
+        $response = $this->postJson('/api/parafia-topics/upload-image', [
             'image' => UploadedFile::fake()->image('pic.jpg'),
         ]);
 
@@ -228,14 +196,14 @@ class ContentTopicControllerTest extends TestCase
         Storage::fake('public');
         $this->actingAsLevel(PermissionLevel::Editor);
 
-        $response = $this->postJson('/api/content-topics/upload-image', [
+        $response = $this->postJson('/api/parafia-topics/upload-image', [
             'image' => UploadedFile::fake()->image('pic.jpg'),
         ]);
 
         $response->assertOk();
         $url = $response->json('url');
-        $this->assertStringContainsString('/storage/content/', $url);
-        Storage::disk('public')->assertExists('content/'.basename($url));
+        $this->assertStringContainsString('/storage/content/parafia/', $url);
+        Storage::disk('public')->assertExists('content/parafia/'.basename($url));
     }
 
     public function test_upload_image_rejects_non_image_files(): void
@@ -243,7 +211,7 @@ class ContentTopicControllerTest extends TestCase
         Storage::fake('public');
         $this->actingAsLevel(PermissionLevel::Editor);
 
-        $response = $this->postJson('/api/content-topics/upload-image', [
+        $response = $this->postJson('/api/parafia-topics/upload-image', [
             'image' => UploadedFile::fake()->create('document.pdf', 10),
         ]);
 

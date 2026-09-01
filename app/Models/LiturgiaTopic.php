@@ -2,15 +2,13 @@
 
 namespace App\Models;
 
-use App\Enums\ContentPageSlug;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ContentTopic extends Model
+class LiturgiaTopic extends Model
 {
     protected $fillable = [
-        'page',
         'icon_url',
         'title',
         'content',
@@ -22,7 +20,6 @@ class ContentTopic extends Model
     protected function casts(): array
     {
         return [
-            'page' => ContentPageSlug::class,
             'visible_from' => 'datetime',
         ];
     }

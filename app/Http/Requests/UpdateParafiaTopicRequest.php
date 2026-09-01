@@ -2,11 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\ContentPageSlug;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class StoreContentTopicRequest extends FormRequest
+class UpdateParafiaTopicRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -16,7 +14,6 @@ class StoreContentTopicRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'page' => ['required', 'string', Rule::in(array_column(ContentPageSlug::cases(), 'value'))],
             'iconUrl' => ['nullable', 'string'],
             'title' => ['required', 'string'],
             'content' => ['nullable', 'string'],
