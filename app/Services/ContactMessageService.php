@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Mail\ContactMessageMail;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class ContactMessageService
@@ -24,13 +25,20 @@ class ContactMessageService
         ]);
 
         if (! $response->successful()) {
+            Log::warning('reCAPTCHA siteverify request failed', ['status' => $response->status()]);
+
             return false;
         }
 
         $data = $response->json();
-
-        return ($data['success'] ?? false) === true
+        $passed = ($data['success'] ?? false) === true
             && ($data['score'] ?? 0) >= self::RECAPTCHA_MIN_SCORE;
+
+        if (! $passed) {
+            Log::warning('reCAPTCHA verification did not pass', ['response' => $data]);
+        }
+
+        return $passed;
     }
 
     public function send(array $data): void
