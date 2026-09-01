@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Mail\ContactMessageMail;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class ContactMessageService
@@ -20,12 +19,6 @@ class ContactMessageService
         $siteKey = config('services.recaptcha.site_key');
 
         if (! $projectId || ! $apiKey || ! $siteKey) {
-            Log::warning('reCAPTCHA config missing', [
-                'has_project_id' => (bool) $projectId,
-                'has_api_key' => (bool) $apiKey,
-                'has_site_key' => (bool) $siteKey,
-            ]);
-
             return false;
         }
 
@@ -41,11 +34,6 @@ class ContactMessageService
         );
 
         if (! $response->successful()) {
-            Log::warning('reCAPTCHA assessment request failed', [
-                'status' => $response->status(),
-                'body' => $response->body(),
-            ]);
-
             return false;
         }
 
@@ -54,13 +42,7 @@ class ContactMessageService
         $actionMatches = ($data['tokenProperties']['action'] ?? null) === self::RECAPTCHA_EXPECTED_ACTION;
         $score = $data['riskAnalysis']['score'] ?? 0;
 
-        $passed = $valid && $actionMatches && $score >= self::RECAPTCHA_MIN_SCORE;
-
-        if (! $passed) {
-            Log::warning('reCAPTCHA verification did not pass', ['response' => $data]);
-        }
-
-        return $passed;
+        return $valid && $actionMatches && $score >= self::RECAPTCHA_MIN_SCORE;
     }
 
     public function send(array $data): void
