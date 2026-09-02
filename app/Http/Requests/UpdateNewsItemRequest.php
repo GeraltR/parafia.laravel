@@ -17,7 +17,7 @@ class UpdateNewsItemRequest extends FormRequest
             'date' => ['required', 'date'],
             'title' => ['required', 'string'],
             'excerpt' => ['required', 'string'],
-            'image' => ['required', 'string'],
+            'image' => ['nullable', 'string'],
             'body' => ['nullable', 'string'],
             'showImageOnFullContent' => ['boolean'],
             'authorId' => ['required', 'integer', 'exists:users,id'],

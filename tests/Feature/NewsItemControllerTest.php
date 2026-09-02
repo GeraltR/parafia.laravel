@@ -51,6 +51,19 @@ class NewsItemControllerTest extends TestCase
         $this->assertDatabaseHas('news_items', ['title' => 'Nowa aktualność', 'show_image_on_full_content' => false]);
     }
 
+    public function test_store_allows_omitting_image(): void
+    {
+        $this->actingAsLevel(PermissionLevel::Editor);
+
+        $payload = $this->payload();
+        $payload['image'] = null;
+
+        $response = $this->postJson('/api/news', $payload);
+
+        $response->assertCreated();
+        $response->assertJsonPath('data.image', null);
+    }
+
     public function test_index_returns_latest_four_ordered_by_date_desc(): void
     {
         for ($i = 0; $i < 6; $i++) {
