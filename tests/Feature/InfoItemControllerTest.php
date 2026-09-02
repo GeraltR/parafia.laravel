@@ -151,6 +151,23 @@ class InfoItemControllerTest extends TestCase
         $response->assertJsonPath('data.bannerDurationSeconds', 0);
     }
 
+    public function test_store_allows_omitting_image_and_progress(): void
+    {
+        $this->actingAsLevel(PermissionLevel::Editor);
+
+        $payload = $this->payload();
+        $payload['image'] = null;
+        $payload['progressValue'] = null;
+        $payload['progressDescription'] = null;
+
+        $response = $this->postJson('/api/informacje', $payload);
+
+        $response->assertCreated();
+        $response->assertJsonPath('data.image', null);
+        $response->assertJsonPath('data.progressValue', null);
+        $response->assertJsonPath('data.progressDescription', null);
+    }
+
     public function test_store_rejects_valid_to_before_valid_from(): void
     {
         $this->actingAsLevel(PermissionLevel::Editor);
