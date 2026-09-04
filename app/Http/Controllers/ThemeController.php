@@ -15,6 +15,8 @@ class ThemeController extends Controller
         'font_body' => 'Inter',
         'title' => '',
         'subtitle' => '',
+        'privacy_policy' => null,
+        'accessibility_statement' => null,
     ];
 
     public function show(): ThemeResource
@@ -38,6 +40,8 @@ class ThemeController extends Controller
             'font_body' => $data['fontBody'],
             'title' => $data['title'],
             'subtitle' => $data['subtitle'],
+            'privacy_policy' => $data['privacyPolicy'] ?? null,
+            'accessibility_statement' => $data['accessibilityStatement'] ?? null,
         ]);
 
         return ThemeResource::make($theme);

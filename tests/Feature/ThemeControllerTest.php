@@ -99,4 +99,32 @@ class ThemeControllerTest extends TestCase
             $response->assertJsonPath('data.title', 'Nowy tytul');
         }
     }
+
+    public function test_update_saves_privacy_policy(): void
+    {
+        $this->createTheme();
+        $this->actingAsLevel(PermissionLevel::Administrator);
+
+        $payload = $this->validPayload();
+        $payload['privacyPolicy'] = '<p>Polityka prywatności</p>';
+
+        $response = $this->putJson('/api/theme', $payload);
+
+        $response->assertOk();
+        $response->assertJsonPath('data.privacyPolicy', '<p>Polityka prywatności</p>');
+    }
+
+    public function test_update_saves_accessibility_statement(): void
+    {
+        $this->createTheme();
+        $this->actingAsLevel(PermissionLevel::Administrator);
+
+        $payload = $this->validPayload();
+        $payload['accessibilityStatement'] = '<p>Deklaracja dostępności</p>';
+
+        $response = $this->putJson('/api/theme', $payload);
+
+        $response->assertOk();
+        $response->assertJsonPath('data.accessibilityStatement', '<p>Deklaracja dostępności</p>');
+    }
 }

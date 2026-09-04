@@ -20,6 +20,8 @@ class UpdateThemeRequest extends FormRequest
             'fontBody' => ['required', 'string'],
             'title' => ['required', 'string'],
             'subtitle' => ['required', 'string'],
+            'privacyPolicy' => ['nullable', 'string'],
+            'accessibilityStatement' => ['nullable', 'string'],
         ];
     }
 }

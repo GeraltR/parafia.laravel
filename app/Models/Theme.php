@@ -13,5 +13,7 @@ class Theme extends Model
         'font_body',
         'title',
         'subtitle',
+        'privacy_policy',
+        'accessibility_statement',
     ];
 }

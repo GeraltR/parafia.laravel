@@ -17,6 +17,8 @@ class ThemeResource extends JsonResource
             'fontBody' => $this->font_body,
             'title' => $this->title,
             'subtitle' => $this->subtitle,
+            'privacyPolicy' => $this->privacy_policy,
+            'accessibilityStatement' => $this->accessibility_statement,
         ];
     }
 }
