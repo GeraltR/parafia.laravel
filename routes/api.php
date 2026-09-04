@@ -16,6 +16,7 @@ use App\Http\Controllers\MediaController;
 use App\Http\Controllers\MassIntentionController;
 use App\Http\Controllers\NavbarController;
 use App\Http\Controllers\NewsItemController;
+use App\Http\Controllers\PageViewController;
 use App\Http\Controllers\ParafiaTopicController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\SakramentyTopicController;
@@ -148,6 +149,11 @@ Route::get('/media', [MediaController::class, 'index'])
     ->middleware('auth:sanctum');
 Route::delete('/media/{media}', [MediaController::class, 'destroy'])
     ->middleware(['auth:sanctum', 'can-write:site']);
+
+Route::post('/page-views', [PageViewController::class, 'store'])
+    ->middleware('throttle:120,1');
+Route::get('/page-views/summary', [PageViewController::class, 'summary'])
+    ->middleware('auth:sanctum');
 
 Route::get('/sakramenty-topics', [SakramentyTopicController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {
