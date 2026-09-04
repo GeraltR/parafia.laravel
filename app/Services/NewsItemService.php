@@ -7,6 +7,8 @@ use Illuminate\Http\UploadedFile;
 
 class NewsItemService
 {
+    public function __construct(private readonly MediaService $mediaService) {}
+
     public function create(array $data): NewsItem
     {
         return NewsItem::create([
@@ -35,10 +37,13 @@ class NewsItemService
         return $newsItem;
     }
 
-    public function storeImage(UploadedFile $file, string $baseUrl): string
+    public function storeImage(UploadedFile $file, string $baseUrl, ?int $authorId = null): string
     {
         $path = $file->store('news', 'public');
+        $url = rtrim($baseUrl, '/').'/storage/'.$path;
 
-        return rtrim($baseUrl, '/').'/storage/'.$path;
+        $this->mediaService->record($file, $path, $url, $authorId);
+
+        return $url;
     }
 }

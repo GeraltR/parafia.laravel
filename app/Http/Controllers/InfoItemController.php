@@ -62,7 +62,8 @@ class InfoItemController extends Controller
     {
         $url = $this->infoItemService->storeImage(
             $request->file('image'),
-            $request->getSchemeAndHttpHost()
+            $request->getSchemeAndHttpHost(),
+            $request->user()?->id
         );
 
         return response()->json(['url' => $url]);

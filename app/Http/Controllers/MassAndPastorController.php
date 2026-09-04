@@ -32,7 +32,8 @@ class MassAndPastorController extends Controller
     {
         $url = $this->massAndPastorService->storePhoto(
             $request->file('photo'),
-            $request->getSchemeAndHttpHost()
+            $request->getSchemeAndHttpHost(),
+            $request->user()?->id
         );
 
         return response()->json(['url' => $url]);

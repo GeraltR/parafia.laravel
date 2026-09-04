@@ -7,6 +7,8 @@ use Illuminate\Http\UploadedFile;
 
 class HeroService
 {
+    public function __construct(private readonly MediaService $mediaService) {}
+
     public function update(Hero $hero, array $data): Hero
     {
         $hero->update([
@@ -66,10 +68,13 @@ class HeroService
         $hero->buttons()->whereNotIn('id', $keepIds)->delete();
     }
 
-    public function storeBackgroundImage(UploadedFile $file, string $baseUrl): string
+    public function storeBackgroundImage(UploadedFile $file, string $baseUrl, ?int $authorId = null): string
     {
         $path = $file->store('hero', 'public');
+        $url = rtrim($baseUrl, '/').'/storage/'.$path;
 
-        return rtrim($baseUrl, '/').'/storage/'.$path;
+        $this->mediaService->record($file, $path, $url, $authorId);
+
+        return $url;
     }
 }

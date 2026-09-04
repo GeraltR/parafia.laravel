@@ -12,6 +12,7 @@ use App\Http\Controllers\HeroController;
 use App\Http\Controllers\InfoItemController;
 use App\Http\Controllers\LiturgiaTopicController;
 use App\Http\Controllers\MassAndPastorController;
+use App\Http\Controllers\MediaController;
 use App\Http\Controllers\MassIntentionController;
 use App\Http\Controllers\NavbarController;
 use App\Http\Controllers\NewsItemController;
@@ -141,6 +142,11 @@ Route::post('/contact-message', [ContactMessageController::class, 'store'])
     ->middleware('throttle:5,1');
 
 Route::post('/content-images', [ContentImageController::class, 'upload'])
+    ->middleware(['auth:sanctum', 'can-write:content']);
+
+Route::get('/media', [MediaController::class, 'index'])
+    ->middleware('auth:sanctum');
+Route::delete('/media/{media}', [MediaController::class, 'destroy'])
     ->middleware(['auth:sanctum', 'can-write:content']);
 
 Route::get('/sakramenty-topics', [SakramentyTopicController::class, 'index']);

@@ -55,7 +55,8 @@ class LiturgiaTopicController extends Controller
     {
         $url = $this->liturgiaTopicService->storeImage(
             $request->file('image'),
-            $request->getSchemeAndHttpHost()
+            $request->getSchemeAndHttpHost(),
+            $request->user()?->id
         );
 
         return response()->json(['url' => $url]);

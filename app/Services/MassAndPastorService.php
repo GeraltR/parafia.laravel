@@ -9,6 +9,8 @@ use Illuminate\Http\UploadedFile;
 
 class MassAndPastorService
 {
+    public function __construct(private readonly MediaService $mediaService) {}
+
     public function update(MassAndPastorSection $section, array $data): void
     {
         $section->update([
@@ -80,10 +82,13 @@ class MassAndPastorService
         Pastor::where('mass_and_pastor_section_id', $section->id)->whereNotIn('id', $keepIds)->delete();
     }
 
-    public function storePhoto(UploadedFile $file, string $baseUrl): string
+    public function storePhoto(UploadedFile $file, string $baseUrl, ?int $authorId = null): string
     {
         $path = $file->store('pastors', 'public');
+        $url = rtrim($baseUrl, '/').'/storage/'.$path;
 
-        return rtrim($baseUrl, '/').'/storage/'.$path;
+        $this->mediaService->record($file, $path, $url, $authorId);
+
+        return $url;
     }
 }

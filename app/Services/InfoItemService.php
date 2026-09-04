@@ -7,6 +7,8 @@ use Illuminate\Http\UploadedFile;
 
 class InfoItemService
 {
+    public function __construct(private readonly MediaService $mediaService) {}
+
     public function create(array $data): InfoItem
     {
         return InfoItem::create($this->mapData($data));
@@ -19,11 +21,14 @@ class InfoItemService
         return $infoItem;
     }
 
-    public function storeImage(UploadedFile $file, string $baseUrl): string
+    public function storeImage(UploadedFile $file, string $baseUrl, ?int $authorId = null): string
     {
         $path = $file->store('info-items', 'public');
+        $url = rtrim($baseUrl, '/').'/storage/'.$path;
 
-        return rtrim($baseUrl, '/').'/storage/'.$path;
+        $this->mediaService->record($file, $path, $url, $authorId);
+
+        return $url;
     }
 
     private function mapData(array $data): array

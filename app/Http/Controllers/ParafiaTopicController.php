@@ -55,7 +55,8 @@ class ParafiaTopicController extends Controller
     {
         $url = $this->parafiaTopicService->storeImage(
             $request->file('image'),
-            $request->getSchemeAndHttpHost()
+            $request->getSchemeAndHttpHost(),
+            $request->user()?->id
         );
 
         return response()->json(['url' => $url]);

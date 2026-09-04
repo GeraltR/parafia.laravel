@@ -55,7 +55,8 @@ class SakramentyTopicController extends Controller
     {
         $url = $this->sakramentyTopicService->storeImage(
             $request->file('image'),
-            $request->getSchemeAndHttpHost()
+            $request->getSchemeAndHttpHost(),
+            $request->user()?->id
         );
 
         return response()->json(['url' => $url]);

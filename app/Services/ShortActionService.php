@@ -8,6 +8,8 @@ use Illuminate\Http\UploadedFile;
 
 class ShortActionService
 {
+    public function __construct(private readonly MediaService $mediaService) {}
+
     public function update(ShortActionsConfig $config, array $data): void
     {
         $config->update([
@@ -33,10 +35,13 @@ class ShortActionService
         }
     }
 
-    public function storeIcon(UploadedFile $file, string $baseUrl): string
+    public function storeIcon(UploadedFile $file, string $baseUrl, ?int $authorId = null): string
     {
         $path = $file->store('short-actions', 'public');
+        $url = rtrim($baseUrl, '/').'/storage/'.$path;
 
-        return rtrim($baseUrl, '/').'/storage/'.$path;
+        $this->mediaService->record($file, $path, $url, $authorId);
+
+        return $url;
     }
 }

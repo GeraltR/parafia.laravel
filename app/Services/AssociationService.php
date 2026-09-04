@@ -8,6 +8,8 @@ use Illuminate\Http\UploadedFile;
 
 class AssociationService
 {
+    public function __construct(private readonly MediaService $mediaService) {}
+
     public function update(AssociationsConfig $config, array $data): void
     {
         $config->update([
@@ -40,10 +42,13 @@ class AssociationService
         Association::where('associations_config_id', $config->id)->whereNotIn('id', $keepIds)->delete();
     }
 
-    public function storeImage(UploadedFile $file, string $baseUrl): string
+    public function storeImage(UploadedFile $file, string $baseUrl, ?int $authorId = null): string
     {
         $path = $file->store('associations', 'public');
+        $url = rtrim($baseUrl, '/').'/storage/'.$path;
 
-        return rtrim($baseUrl, '/').'/storage/'.$path;
+        $this->mediaService->record($file, $path, $url, $authorId);
+
+        return $url;
     }
 }

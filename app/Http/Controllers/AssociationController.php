@@ -31,7 +31,8 @@ class AssociationController extends Controller
     {
         $url = $this->associationService->storeImage(
             $request->file('image'),
-            $request->getSchemeAndHttpHost()
+            $request->getSchemeAndHttpHost(),
+            $request->user()?->id
         );
 
         return response()->json(['url' => $url]);

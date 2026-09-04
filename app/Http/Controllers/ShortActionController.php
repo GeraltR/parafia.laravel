@@ -34,7 +34,8 @@ class ShortActionController extends Controller
     {
         $url = $this->shortActionService->storeIcon(
             $request->file('icon'),
-            $request->getSchemeAndHttpHost()
+            $request->getSchemeAndHttpHost(),
+            $request->user()?->id
         );
 
         return response()->json(['url' => $url]);

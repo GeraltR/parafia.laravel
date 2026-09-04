@@ -10,6 +10,8 @@ class SakramentyTopicService
 {
     private const MAX_TOPICS = 7;
 
+    public function __construct(private readonly MediaService $mediaService) {}
+
     public function create(array $data): SakramentyTopic
     {
         $existingCount = SakramentyTopic::count();
@@ -43,10 +45,13 @@ class SakramentyTopicService
         return $topic;
     }
 
-    public function storeImage(UploadedFile $file, string $baseUrl): string
+    public function storeImage(UploadedFile $file, string $baseUrl, ?int $authorId = null): string
     {
         $path = $file->store('content/sakramenty', 'public');
+        $url = rtrim($baseUrl, '/').'/storage/'.$path;
 
-        return rtrim($baseUrl, '/').'/storage/'.$path;
+        $this->mediaService->record($file, $path, $url, $authorId);
+
+        return $url;
     }
 }
