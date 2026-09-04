@@ -59,10 +59,24 @@ class MediaControllerTest extends TestCase
         $this->assertNotNull($response->json('data.0.author'));
     }
 
-    public function test_destroy_requires_write_permission(): void
+    public function test_destroy_forbidden_for_viewer(): void
     {
         Storage::fake('public');
         $this->actingAsLevel(PermissionLevel::Viewer);
+        $media = Media::create([
+            'url' => 'http://localhost/storage/news/a.jpg',
+            'path' => 'news/a.jpg',
+        ]);
+
+        $response = $this->deleteJson("/api/media/{$media->id}");
+
+        $response->assertStatus(403);
+    }
+
+    public function test_destroy_forbidden_for_editor(): void
+    {
+        Storage::fake('public');
+        $this->actingAsLevel(PermissionLevel::Editor);
         $media = Media::create([
             'url' => 'http://localhost/storage/news/a.jpg',
             'path' => 'news/a.jpg',
@@ -77,7 +91,7 @@ class MediaControllerTest extends TestCase
     {
         Storage::fake('public');
         Storage::disk('public')->put('news/a.jpg', 'fake-contents');
-        $this->actingAsLevel(PermissionLevel::Editor);
+        $this->actingAsLevel(PermissionLevel::Administrator);
         $media = Media::create([
             'url' => 'http://localhost/storage/news/a.jpg',
             'path' => 'news/a.jpg',

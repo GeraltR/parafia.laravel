@@ -147,7 +147,7 @@ Route::post('/content-images', [ContentImageController::class, 'upload'])
 Route::get('/media', [MediaController::class, 'index'])
     ->middleware('auth:sanctum');
 Route::delete('/media/{media}', [MediaController::class, 'destroy'])
-    ->middleware(['auth:sanctum', 'can-write:content']);
+    ->middleware(['auth:sanctum', 'can-write:site']);
 
 Route::get('/sakramenty-topics', [SakramentyTopicController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {
